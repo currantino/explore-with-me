@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.stats.viewstats.service.ViewStatsService;
-import ru.practicum.viewstats.ViewStats;
-import ru.practicum.viewstats.ViewStatsRequestDto;
+import ru.practicum.ewm.stats.dto.viewstats.ViewStats;
+import ru.practicum.ewm.stats.dto.viewstats.ViewStatsRequestDto;
 
 import java.time.LocalDateTime;
 import java.util.List;

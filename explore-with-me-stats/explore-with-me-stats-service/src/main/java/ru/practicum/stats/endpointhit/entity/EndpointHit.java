@@ -9,7 +9,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "endpoint_hits")
+@Table(name = "endpoint_hit")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -22,11 +22,11 @@ public class EndpointHit {
     @Column(name = "app_name")
     private String app;
 
-    @Column(name = "endpoint_hit_uri")
+    @Column(name = "uri")
     private String uri;
     @Column(name = "client_ip_address")
     private String ip;
 
-    @Column(name = "endpoint_hit_timestamp")
+    @Column(name = "timestamp")
     private LocalDateTime timestamp;
 }

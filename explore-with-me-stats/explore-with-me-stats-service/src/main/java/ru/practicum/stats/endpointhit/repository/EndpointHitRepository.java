@@ -18,9 +18,10 @@ public interface EndpointHitRepository extends JpaRepository<EndpointHit, Long> 
            "from " +
            "    EndpointHit hit " +
            "where " +
-           "    hit.timestamp > ?1 and hit.timestamp < ?2 and hit.uri = ?3 " +
+           "    (hit.timestamp between ?1 and ?2) and hit.uri = ?3 " +
            "group by " +
-           "    hit.uri, hit.ip")
+           "    hit.app," +
+           "    hit.uri")
     ViewStatsProjection findByStartEndUriUnique(LocalDateTime start, LocalDateTime end, String uri);
 
     @Query("select " +
@@ -30,7 +31,10 @@ public interface EndpointHitRepository extends JpaRepository<EndpointHit, Long> 
            "from " +
            "    EndpointHit hit " +
            "where " +
-           "    (hit.timestamp between ?1 and ?2) and hit.uri = ?3")
+           "    (hit.timestamp between ?1 and ?2) and hit.uri = ?3 " +
+           "group by " +
+           "    hit.app," +
+           "    hit.uri")
     ViewStatsProjection findByStartEndUri(LocalDateTime start, LocalDateTime end, String uri);
 
     @Query("select " +
@@ -42,6 +46,7 @@ public interface EndpointHitRepository extends JpaRepository<EndpointHit, Long> 
            "where " +
            "    hit.timestamp between ?1 and ?2 " +
            "group by " +
+           "    hit.app," +
            "    hit.uri " +
            "order by " +
            "    hits desc")
@@ -54,7 +59,8 @@ public interface EndpointHitRepository extends JpaRepository<EndpointHit, Long> 
            "from " +
            "    EndpointHit hit " +
            "group by " +
-           "    hit.uri, hit.ip " +
+           "    hit.app," +
+           "    hit.uri " +
            "order by " +
            "    hits desc")
     List<ViewStatsProjection> findAllByStartEndUnique(LocalDateTime start, LocalDateTime end);

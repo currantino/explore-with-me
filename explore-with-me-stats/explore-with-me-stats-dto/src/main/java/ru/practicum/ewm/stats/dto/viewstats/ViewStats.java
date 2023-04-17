@@ -1,4 +1,4 @@
-package ru.practicum.viewstats;
+package ru.practicum.ewm.stats.dto.viewstats;
 
 import lombok.Builder;
 import lombok.Data;

@@ -17,6 +17,7 @@
             explore-with-me-stats-service
         </module>
         <module>explore-with-me-stats-dto</module>
+        <module>explore-with-me-stats-client</module>
     </modules>
 
     <properties>

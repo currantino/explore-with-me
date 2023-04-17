@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.stats.endpointhit.repository.EndpointHitRepository;
 import ru.practicum.stats.viewstats.projections.ViewStatsProjection;
-import ru.practicum.viewstats.ViewStats;
-import ru.practicum.viewstats.ViewStatsRequestDto;
+import ru.practicum.ewm.stats.dto.viewstats.ViewStats;
+import ru.practicum.ewm.stats.dto.viewstats.ViewStatsRequestDto;
 
 import java.time.LocalDateTime;
 import java.util.Comparator;

@@ -2,15 +2,12 @@ package ru.practicum.stats.viewstats.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.practicum.stats.endpointhit.repository.EndpointHitRepository;
-import ru.practicum.stats.viewstats.projections.ViewStatsProjection;
 import ru.practicum.ewm.stats.dto.viewstats.ViewStats;
 import ru.practicum.ewm.stats.dto.viewstats.ViewStatsRequestDto;
+import ru.practicum.stats.endpointhit.repository.EndpointHitRepository;
+import ru.practicum.stats.viewstats.projections.ViewStatsProjection;
 
-import java.time.LocalDateTime;
-import java.util.Comparator;
 import java.util.List;
-import java.util.function.Function;
 
 import static java.util.stream.Collectors.toList;
 
@@ -19,56 +16,75 @@ import static java.util.stream.Collectors.toList;
 public class ViewStatsService {
     private final EndpointHitRepository endpointHitRepository;
 
-    private static final Function<ViewStatsProjection, ViewStats> MAPPER = proj ->
-            ViewStats
-                    .builder()
-                    .hits(proj.getHits())
-                    .app(proj.getApp())
-                    .uri(proj.getUri())
-                    .build();
+    public List<ViewStats> getViewStats(ViewStatsRequestDto requestDto) {
+        if (requestDto.getUris().isEmpty()) {
+            return getViewStatsByStartEnd(requestDto);
+        }
+        return getViewStatsByStartEndUri(requestDto);
+    }
 
-    public List<ViewStats> viewStats(ViewStatsRequestDto requestDto) {
-        final LocalDateTime start = requestDto.getStart();
-        final LocalDateTime end = requestDto.getEnd();
-        if (requestDto.getUris() == null || requestDto.getUris()
-                .isEmpty()) {
-            if (requestDto.getUnique()) return endpointHitRepository.findAllByStartEndUnique(start, end)
-                    .stream()
-                    .map(MAPPER)
-                    .collect(toList());
-            else return endpointHitRepository.findAllByStartEnd(start, end)
-                    .stream()
-                    .map(MAPPER)
-                    .collect(toList());
-        }
+    private List<ViewStats> getViewStatsByStartEnd(ViewStatsRequestDto requestDto) {
         if (requestDto.getUnique()) {
-            return requestDto.getUris()
-                    .stream()
-                    .map(uri -> endpointHitRepository.findByStartEndUriUnique(
-                            start,
-                            end,
-                            uri
-                    ))
-                    .map(MAPPER)
-                    .sorted(Comparator.comparing(ViewStats::getHits)
-                            .reversed())
-                    .collect(toList());
-        } else {
-            return requestDto.getUris()
-                    .stream()
-                    .map(uri ->
-                            endpointHitRepository.findByStartEndUri(
-                                    start,
-                                    end,
-                                    uri
-                            )
-                    )
-                    .map(MAPPER)
-                    .sorted(Comparator.comparing(ViewStats::getHits)
-                            .reversed())
-                    .collect(toList());
+            return findAllByStartEndUnique(requestDto);
         }
+        return findAllByStartEnd(requestDto);
+    }
+
+    private List<ViewStats> getViewStatsByStartEndUri(ViewStatsRequestDto requestDto) {
+        if (requestDto.getUnique()) {
+            return findAllByStartEndUriUnique(requestDto);
+        }
+        return findAllByStartEndUri(requestDto);
+    }
+
+    private List<ViewStats> findAllByStartEnd(ViewStatsRequestDto requestDto) {
+        return mapToViewStats(
+                endpointHitRepository.findAllByStartEnd(
+                        requestDto.getStart(),
+                        requestDto.getEnd()
+                )
+        );
+    }
+
+    private List<ViewStats> findAllByStartEndUnique(ViewStatsRequestDto requestDto) {
+        return mapToViewStats(
+                endpointHitRepository.findAllByStartEndUnique(
+                        requestDto.getStart(),
+                        requestDto.getStart()
+                )
+        );
+    }
+
+    private List<ViewStats> findAllByStartEndUri(ViewStatsRequestDto requestDto) {
+        return mapToViewStats(
+                endpointHitRepository.findAllByStartEndUri(
+                        requestDto.getStart(),
+                        requestDto.getEnd(),
+                        requestDto.getUris()
+                )
+        );
+    }
+
+    private List<ViewStats> findAllByStartEndUriUnique(ViewStatsRequestDto requestDto) {
+        return mapToViewStats(
+                endpointHitRepository.findAllByStartEndUriUnique(
+                        requestDto.getStart(),
+                        requestDto.getEnd(),
+                        requestDto.getUris()
+                )
+        );
     }
 
 
+    private List<ViewStats> mapToViewStats(List<ViewStatsProjection> viewStatsProjections) {
+        return viewStatsProjections.stream()
+                .map(proj ->
+                        ViewStats
+                                .builder()
+                                .hits(proj.getHits())
+                                .app(proj.getApp())
+                                .uri(proj.getUri())
+                                .build())
+                .collect(toList());
+    }
 }

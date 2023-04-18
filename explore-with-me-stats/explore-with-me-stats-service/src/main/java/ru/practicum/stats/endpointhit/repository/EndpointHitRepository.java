@@ -11,59 +11,67 @@ import java.util.List;
 
 @Repository
 public interface EndpointHitRepository extends JpaRepository<EndpointHit, Long> {
-    @Query("select " +
-           "    count(distinct(hit.ip)) as hits, " +
-           "    hit.app as app, " +
-           "    hit.uri as uri " +
-           "from " +
-           "    EndpointHit hit " +
-           "where " +
-           "    (hit.timestamp between ?1 and ?2) and hit.uri = ?3 " +
-           "group by " +
-           "    hit.app," +
-           "    hit.uri")
-    ViewStatsProjection findByStartEndUriUnique(LocalDateTime start, LocalDateTime end, String uri);
-
-    @Query("select " +
-           "    count(hit) as hits, " +
-           "    hit.app as app, " +
-           "    hit.uri as uri " +
-           "from " +
-           "    EndpointHit hit " +
-           "where " +
-           "    (hit.timestamp between ?1 and ?2) and hit.uri = ?3 " +
-           "group by " +
-           "    hit.app," +
-           "    hit.uri")
-    ViewStatsProjection findByStartEndUri(LocalDateTime start, LocalDateTime end, String uri);
-
-    @Query("select " +
-           "    count(hit) as hits, " +
-           "    hit.app as app, " +
-           "    hit.uri as uri " +
-           "from " +
-           "    EndpointHit hit " +
-           "where " +
-           "    hit.timestamp between ?1 and ?2 " +
-           "group by " +
+    @Query("SELECT " +
+           "    COUNT(hit) AS hits, " +
+           "    hit.app AS app, " +
+           "    hit.uri AS uri " +
+           "FROM " +
+           "    EndpointHit AS hit " +
+           "WHERE " +
+           "    hit.timestamp BETWEEN ?1 AND ?2 " +
+           "GROUP BY " +
            "    hit.app," +
            "    hit.uri " +
-           "order by " +
-           "    hits desc")
+           "ORDER BY " +
+           "    hits DESC")
     List<ViewStatsProjection> findAllByStartEnd(LocalDateTime start, LocalDateTime end);
 
-    @Query("select " +
-           "    count(distinct(hit.ip)) as hits, " +
-           "    hit.app as app, " +
-           "    hit.uri as uri " +
-           "from " +
-           "    EndpointHit hit " +
-           "group by " +
+    @Query("SELECT " +
+           "    COUNT(distinct hit.ip) AS hits, " +
+           "    hit.app AS app, " +
+           "    hit.uri AS uri " +
+           "FROM " +
+           "    EndpointHit AS hit " +
+           "WHERE " +
+           "    hit.timestamp BETWEEN ?1 AND ?2 " +
+           "GROUP BY " +
            "    hit.app," +
            "    hit.uri " +
-           "order by " +
-           "    hits desc")
+           "ORDER BY " +
+           "    hits DESC")
     List<ViewStatsProjection> findAllByStartEndUnique(LocalDateTime start, LocalDateTime end);
+
+    @Query("SELECT " +
+           "    COUNT(hit) AS hits, " +
+           "    hit.app AS app, " +
+           "    hit.uri AS uri " +
+           "FROM " +
+           "    EndpointHit AS hit " +
+           "WHERE " +
+           "    (hit.timestamp BETWEEN ?1 AND ?2) " +
+           "    AND hit.uri IN ?3 " +
+           "GROUP BY " +
+           "    hit.app," +
+           "    hit.uri " +
+           "ORDER BY " +
+           "    hits DESC")
+    List<ViewStatsProjection> findAllByStartEndUri(LocalDateTime start, LocalDateTime end, List<String> uris);
+
+    @Query("SELECT " +
+           "    COUNT(distinct hit.ip) AS hits, " +
+           "    hit.app AS app, " +
+           "    hit.uri AS uri " +
+           "FROM " +
+           "    EndpointHit AS hit " +
+           "WHERE " +
+           "    (hit.timestamp BETWEEN ?1 AND ?2) " +
+           "    AND hit.uri IN ?3 " +
+           "GROUP BY " +
+           "    hit.app," +
+           "    hit.uri " +
+           "ORDER BY " +
+           "    hits DESC")
+    List<ViewStatsProjection> findAllByStartEndUriUnique(LocalDateTime start, LocalDateTime end, List<String> uris);
 
 
 }

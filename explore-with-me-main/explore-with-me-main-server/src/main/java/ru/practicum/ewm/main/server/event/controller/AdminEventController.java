@@ -5,7 +5,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import ru.practicum.ewm.main.server.event.service.EventService;
+import ru.practicum.ewm.main.server.event.dto.AdminEventDto;
+import ru.practicum.ewm.main.server.event.service.AdminEventService;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,7 +15,7 @@ import java.util.List;
 @RequestMapping(path = "/admin/events")
 @RequiredArgsConstructor
 public class AdminEventController {
-    private final EventService eventService;
+    private final AdminEventService adminEventService;
 
     @GetMapping
     public List<AdminEventDto> getEvents(
@@ -54,7 +55,7 @@ public class AdminEventController {
             )
             Integer size
     ) {
-        return eventService.getEvents(
+        return adminEventService.getEvents(
                 userIds,
                 states,
                 categoryIds,

@@ -18,7 +18,6 @@ public class EndpointHitController {
             @RequestBody
             CreateEndPointHitDto createEndPointHitDto
     ) {
-
         endpointHitService.createEndpointHit(createEndPointHitDto);
     }
 }

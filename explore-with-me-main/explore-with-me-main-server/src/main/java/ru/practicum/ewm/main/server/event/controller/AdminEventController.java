@@ -1,5 +1,6 @@
 package ru.practicum.ewm.main.server.event.controller;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +16,7 @@ import java.util.List;
 @RequestMapping(path = "/admin/events")
 @RequiredArgsConstructor
 public class AdminEventController {
+    private static final String DATETIME_FORMAT_PATTERN = "yyyy-MM-dd HH:mm:ss";
     private final AdminEventService adminEventService;
 
     @GetMapping
@@ -38,11 +40,13 @@ public class AdminEventController {
                     name = "rangeStart",
                     required = false
             )
+            @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATETIME_FORMAT_PATTERN)
             LocalDateTime rangeStart,
             @RequestParam(
                     name = "rangeEnd",
                     required = false
             )
+            @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATETIME_FORMAT_PATTERN)
             LocalDateTime rangeEnd,
             @RequestParam(
                     name = "from",

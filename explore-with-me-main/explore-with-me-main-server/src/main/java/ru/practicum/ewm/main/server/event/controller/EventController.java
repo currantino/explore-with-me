@@ -43,4 +43,15 @@ public class EventController {
         );
     }
 
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/{userId}/events/{eventId}")
+    public EventFullDto getEventByUserIdAndEventId(
+            @PathVariable(name = "userId")
+            Long userId,
+            @PathVariable(name = "eventId")
+            Long eventId
+    ) {
+        return eventService.getEventByUserIdAndEventId(userId, eventId);
+    }
+
 }

@@ -1,6 +1,7 @@
 package ru.practicum.ewm.main.server.event.dto.mapper;
 
 import org.mapstruct.*;
+import ru.practicum.ewm.main.server.event.controller.EventShortDto;
 import ru.practicum.ewm.main.server.event.dto.CreateEventRequestDto;
 import ru.practicum.ewm.main.server.event.dto.EventFullDto;
 import ru.practicum.ewm.main.server.event.entity.Event;
@@ -15,6 +16,5 @@ public interface EventMapper {
 
     EventFullDto toFullDto(Event event);
 
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    Event partialUpdate(EventFullDto eventFullDto, @MappingTarget Event event);
+    EventShortDto toShortDto(Event event);
 }

@@ -8,6 +8,7 @@ import ru.practicum.ewm.main.server.event.dto.EventFullDto;
 import ru.practicum.ewm.main.server.event.service.EventService;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/users")
@@ -25,6 +26,21 @@ public class EventController {
             CreateEventRequestDto eventDto
     ) {
         return eventService.createEvent(userId, eventDto);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/{userId}/events")
+    public List<EventShortDto> getEventsByUserId(
+            @PathVariable(name = "userId")
+            Long userId,
+            Integer from,
+            Integer size
+    ) {
+        return eventService.getEventsByUserId(
+                userId,
+                from,
+                size
+        );
     }
 
 }

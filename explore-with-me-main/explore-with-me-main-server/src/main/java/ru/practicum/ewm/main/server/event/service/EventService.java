@@ -1,14 +1,17 @@
 package ru.practicum.ewm.main.server.event.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.ewm.main.server.category.entity.Category;
 import ru.practicum.ewm.main.server.category.repository.CategoryRepository;
+import ru.practicum.ewm.main.server.event.controller.EventShortDto;
 import ru.practicum.ewm.main.server.event.dto.CreateEventRequestDto;
 import ru.practicum.ewm.main.server.event.dto.EventFullDto;
 import ru.practicum.ewm.main.server.event.dto.mapper.EventMapper;
 import ru.practicum.ewm.main.server.event.entity.Event;
-import ru.practicum.ewm.main.server.event.repository.CustomEventRepository;
+import ru.practicum.ewm.main.server.event.repository.EventRepository;
 import ru.practicum.ewm.main.server.exception.CategoryNotFoundException;
 import ru.practicum.ewm.main.server.exception.UserNotFoundException;
 import ru.practicum.ewm.main.server.location.dto.mapper.LocationMapper;
@@ -16,6 +19,8 @@ import ru.practicum.ewm.main.server.location.entity.Location;
 import ru.practicum.ewm.main.server.location.repository.LocationRepository;
 import ru.practicum.ewm.main.server.user.entity.User;
 import ru.practicum.ewm.main.server.user.repository.UserRepository;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -26,7 +31,7 @@ public class EventService {
     private final CategoryRepository categoryRepository;
     private final LocationRepository locationRepository;
     private final LocationMapper locationMapper;
-    private final CustomEventRepository eventRepository;
+    private final EventRepository eventRepository;
 
     public EventFullDto createEvent(
             Long userId,
@@ -60,5 +65,17 @@ public class EventService {
                         locationRepository
                                 .saveAndFlush(location)
                 );
+    }
+
+    public List<EventShortDto> getEventsByUserId(
+            Long userId,
+            Integer from,
+            Integer size
+    ) {
+        Pageable pageRequest = PageRequest.of(from, size);
+        return eventRepository
+                .findAllByInitiator(userId, pageRequest)
+                .map(eventMapper::toShortDto)
+                .getContent();
     }
 }

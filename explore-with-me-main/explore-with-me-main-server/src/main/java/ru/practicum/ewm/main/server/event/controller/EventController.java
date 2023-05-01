@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.main.server.event.dto.CreateEventRequestDto;
 import ru.practicum.ewm.main.server.event.dto.EventFullDto;
+import ru.practicum.ewm.main.server.event.dto.UpdateEventRequestDto;
 import ru.practicum.ewm.main.server.event.service.EventService;
 
 import javax.validation.Valid;
@@ -33,7 +34,15 @@ public class EventController {
     public List<EventShortDto> getEventsByUserId(
             @PathVariable(name = "userId")
             Long userId,
+            @RequestParam(
+                    name = "from",
+                    defaultValue = "0"
+            )
             Integer from,
+            @RequestParam(
+                    name = "size",
+                    defaultValue = "10"
+            )
             Integer size
     ) {
         return eventService.getEventsByUserId(
@@ -52,6 +61,23 @@ public class EventController {
             Long eventId
     ) {
         return eventService.getEventByUserIdAndEventId(userId, eventId);
+    }
+
+    @PatchMapping("/{userId}/events/{eventId}")
+    public EventFullDto patchEvent(
+            @PathVariable(name = "eventId")
+            Long eventId,
+            @PathVariable(name = "userId")
+            Long userId,
+            @Valid
+            @RequestBody
+            UpdateEventRequestDto updateDto
+    ) {
+        return eventService.patchEvent(
+                eventId,
+                userId,
+                updateDto
+        );
     }
 
 }

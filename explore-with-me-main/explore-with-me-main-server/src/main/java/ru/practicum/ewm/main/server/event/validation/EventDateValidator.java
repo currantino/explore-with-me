@@ -11,6 +11,6 @@ public class EventDateValidator implements ConstraintValidator<NotEarlierThanTwo
 
     @Override
     public boolean isValid(LocalDateTime eventDate, ConstraintValidatorContext context) {
-        return eventDate != null && eventDate.isAfter(now().plusHours(2));
+        return eventDate == null || eventDate.isAfter(now().plusHours(2));
     }
 }

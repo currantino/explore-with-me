@@ -19,13 +19,13 @@ public class CreateEventRequestDto {
     Long category;
     @NotBlank(message = "Event description must not be null.")
     String description;
-    @NotNull
+    @NotNull(message = "Event date must not be null.")
     @NotEarlierThanTwoHours(message = "Event must not start in less than two hours.")
     LocalDateTime eventDate;
     @Valid
     @NotNull(message = "Event location must not be null.")
     LocationDto location;
-    Boolean paid;
+    Boolean paid = false;
     @PositiveOrZero(message = "Event participant limit must be a positive integer or zero (no limit)")
     Integer participantLimit = 0;
     Boolean requestModeration;

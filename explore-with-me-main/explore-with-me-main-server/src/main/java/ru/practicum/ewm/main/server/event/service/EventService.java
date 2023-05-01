@@ -9,9 +9,12 @@ import ru.practicum.ewm.main.server.category.repository.CategoryRepository;
 import ru.practicum.ewm.main.server.event.controller.EventShortDto;
 import ru.practicum.ewm.main.server.event.dto.CreateEventRequestDto;
 import ru.practicum.ewm.main.server.event.dto.EventFullDto;
+import ru.practicum.ewm.main.server.event.dto.StateAction;
+import ru.practicum.ewm.main.server.event.dto.UpdateEventRequestDto;
 import ru.practicum.ewm.main.server.event.dto.mapper.EventMapper;
 import ru.practicum.ewm.main.server.event.entity.Event;
 import ru.practicum.ewm.main.server.event.repository.EventRepository;
+import ru.practicum.ewm.main.server.event.state.State;
 import ru.practicum.ewm.main.server.exception.CategoryNotFoundException;
 import ru.practicum.ewm.main.server.exception.EventNotAccessibleException;
 import ru.practicum.ewm.main.server.exception.EventNotFoundException;
@@ -56,6 +59,7 @@ public class EventService {
         event.setInitiator(initiator);
         event.setCategory(category);
         event.setLocation(location);
+        event.setState(State.PENDING);
         event.setCreatedOn(now());
         Event saved = eventRepository.save(event);
         return eventMapper.toFullDto(saved);
@@ -97,13 +101,12 @@ public class EventService {
                 .orElseThrow(() -> new EventNotFoundException("Could not find the requested event."));
     }
 
-    private void checkIfRequesterIsInitiatorOfEvent(Event event, Long requesterId) {
-        if (!Objects.equals(event.getInitiator().getId(), requesterId)) {
-            throw new EventNotAccessibleException("You do not have access to the requested event.");
-        }
-    }
-
-    public EventFullDto patchEvent(Long eventId, Long userId) {
+    public EventFullDto patchEvent(
+            Long eventId,
+            Long userId,
+            UpdateEventRequestDto updateDto
+    ) {
+        checkIfCategoryForUpdateExists(updateDto.getCategory());
         Event event = eventRepository
                 .findById(eventId)
                 .map(e -> {
@@ -112,6 +115,27 @@ public class EventService {
                         }
                 )
                 .orElseThrow(() -> new EventNotFoundException("Could not find the requested event."));
+        eventMapper.partialUpdate(updateDto, event);
+        applyStateAction(updateDto.getStateAction(), event);
+        Event saved = eventRepository.save(event);
+        return eventMapper.toFullDto(saved);
+    }
 
+    private void applyStateAction(StateAction stateAction, Event event) {
+        if (Objects.requireNonNull(stateAction) == StateAction.CANCEL_REVIEW) {
+            event.setState(State.CANCELED);
+        }
+    }
+
+    private void checkIfCategoryForUpdateExists(Long category) {
+        if (category != null && !categoryRepository.existsById(category)) {
+            throw new CategoryNotFoundException("Cannot find the requested category.");
+        }
+    }
+
+    private void checkIfRequesterIsInitiatorOfEvent(Event event, Long requesterId) {
+        if (!Objects.equals(event.getInitiator().getId(), requesterId)) {
+            throw new EventNotAccessibleException("You do not have access to the requested event.");
+        }
     }
 }

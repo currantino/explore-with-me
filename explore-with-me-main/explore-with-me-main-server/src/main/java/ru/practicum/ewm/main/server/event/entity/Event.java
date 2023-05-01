@@ -1,5 +1,6 @@
 package ru.practicum.ewm.main.server.event.entity;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import ru.practicum.ewm.main.server.category.entity.Category;
@@ -27,7 +28,7 @@ public class Event {
     private Category category;
 
     @Column(name = "confirmed_requests")
-    private Long confirmedRequests;
+    private Integer confirmedRequests = 0;
 
     @Column(name = "description")
     private String description;
@@ -49,12 +50,13 @@ public class Event {
     private Boolean paid;
 
     @Column(name = "participant_limit")
-    private Integer participantLimit;
+    private Integer participantLimit = 0;
 
     @Column(name = "published_on")
     private LocalDateTime publishedOn;
-    @Column(name = "is_moderated")
-    private Boolean requestModeration;
+    @Getter(AccessLevel.NONE)
+    @Column(name = "is_request_moderated")
+    private Boolean requestModeration = true;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "state")
@@ -62,7 +64,9 @@ public class Event {
     @Column(name = "title")
     private String title;
     @Column(name = "views")
-    private Long views;
+    private Long views = 0L;
 
-
+    public Boolean isRequestModerated() {
+        return requestModeration;
+    }
 }

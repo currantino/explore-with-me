@@ -16,4 +16,11 @@ public interface EventRepository extends CustomEventRepository {
             "   e.initiator.id = :userId")
     Page<Event> findAllByInitiator(Long userId, Pageable pageRequest);
 
+    @Query("SELECT " +
+            "   e.initiator.id " +
+            "FROM " +
+            "   Event e " +
+            "WHERE " +
+            "   e.id = :eventId")
+    Long findInitiatorIdByEventId(Long eventId);
 }

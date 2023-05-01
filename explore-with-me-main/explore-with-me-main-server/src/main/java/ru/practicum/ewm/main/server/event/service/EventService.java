@@ -22,6 +22,9 @@ import ru.practicum.ewm.main.server.exception.UserNotFoundException;
 import ru.practicum.ewm.main.server.location.dto.mapper.LocationMapper;
 import ru.practicum.ewm.main.server.location.entity.Location;
 import ru.practicum.ewm.main.server.location.repository.LocationRepository;
+import ru.practicum.ewm.main.server.participationrequest.entity.ParticipationRequestDto;
+import ru.practicum.ewm.main.server.participationrequest.entity.ParticipationRequestMapper;
+import ru.practicum.ewm.main.server.participationrequest.repository.ParticipationRequestRepository;
 import ru.practicum.ewm.main.server.user.entity.User;
 import ru.practicum.ewm.main.server.user.repository.UserRepository;
 
@@ -29,6 +32,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static java.time.LocalDateTime.now;
+import static java.util.stream.Collectors.toList;
 
 @Service
 @RequiredArgsConstructor
@@ -40,6 +44,8 @@ public class EventService {
     private final LocationRepository locationRepository;
     private final LocationMapper locationMapper;
     private final EventRepository eventRepository;
+    private final ParticipationRequestRepository participationRequestRepository;
+    private final ParticipationRequestMapper participationRequestMapper;
 
     public EventFullDto createEvent(
             Long userId,
@@ -94,7 +100,7 @@ public class EventService {
         return eventRepository
                 .findById(eventId)
                 .map(e -> {
-                            checkIfRequesterIsInitiatorOfEvent(e, userId);
+                            checkThatRequesterIsEventInitiator(e.getInitiator().getId(), userId);
                             return eventMapper.toFullDto(e);
                         }
                 )
@@ -110,7 +116,7 @@ public class EventService {
         Event event = eventRepository
                 .findById(eventId)
                 .map(e -> {
-                            checkIfRequesterIsInitiatorOfEvent(e, userId);
+                            checkThatRequesterIsEventInitiator(e.getInitiator().getId(), userId);
                             return e;
                         }
                 )
@@ -119,6 +125,15 @@ public class EventService {
         applyStateAction(updateDto.getStateAction(), event);
         Event saved = eventRepository.save(event);
         return eventMapper.toFullDto(saved);
+    }
+
+    public List<ParticipationRequestDto> getParticipationRequestsByEventId(Long userId, Long eventId) {
+        Long eventInitiatorId = eventRepository.findInitiatorIdByEventId(eventId);
+        checkThatRequesterIsEventInitiator(userId, eventInitiatorId);
+        return participationRequestRepository
+                .findAllByEventId(eventId).stream()
+                .map(participationRequestMapper::toDto)
+                .collect(toList());
     }
 
     private void applyStateAction(StateAction stateAction, Event event) {
@@ -133,8 +148,8 @@ public class EventService {
         }
     }
 
-    private void checkIfRequesterIsInitiatorOfEvent(Event event, Long requesterId) {
-        if (!Objects.equals(event.getInitiator().getId(), requesterId)) {
+    private static void checkThatRequesterIsEventInitiator(Long userId, Long eventInitiatorId) {
+        if (!Objects.equals(userId, eventInitiatorId)) {
             throw new EventNotAccessibleException("You do not have access to the requested event.");
         }
     }

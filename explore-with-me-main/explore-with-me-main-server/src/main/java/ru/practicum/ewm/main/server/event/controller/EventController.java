@@ -7,9 +7,12 @@ import ru.practicum.ewm.main.server.event.dto.CreateEventRequestDto;
 import ru.practicum.ewm.main.server.event.dto.EventFullDto;
 import ru.practicum.ewm.main.server.event.dto.UpdateEventRequestDto;
 import ru.practicum.ewm.main.server.event.service.EventService;
+import ru.practicum.ewm.main.server.participationrequest.entity.ParticipationRequestDto;
 
 import javax.validation.Valid;
 import java.util.List;
+
+import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 @RequestMapping("/users")
@@ -29,7 +32,7 @@ public class EventController {
         return eventService.createEvent(userId, eventDto);
     }
 
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(OK)
     @GetMapping("/{userId}/events")
     public List<EventShortDto> getEventsByUserId(
             @PathVariable(name = "userId")
@@ -52,7 +55,7 @@ public class EventController {
         );
     }
 
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(OK)
     @GetMapping("/{userId}/events/{eventId}")
     public EventFullDto getEventByUserIdAndEventId(
             @PathVariable(name = "userId")
@@ -63,6 +66,7 @@ public class EventController {
         return eventService.getEventByUserIdAndEventId(userId, eventId);
     }
 
+    @ResponseStatus(OK)
     @PatchMapping("/{userId}/events/{eventId}")
     public EventFullDto patchEvent(
             @PathVariable(name = "eventId")
@@ -79,5 +83,17 @@ public class EventController {
                 updateDto
         );
     }
+
+    @ResponseStatus(OK)
+    @GetMapping("/{userId}/events/{eventId}/requests")
+    public List<ParticipationRequestDto> getParticipationRequestsByEventId(
+            @PathVariable(name = "userId")
+            Long userId,
+            @PathVariable(name = "eventId")
+            Long eventId
+    ) {
+        return eventService.getParticipationRequestsByEventId(userId, eventId);
+    }
+
 
 }

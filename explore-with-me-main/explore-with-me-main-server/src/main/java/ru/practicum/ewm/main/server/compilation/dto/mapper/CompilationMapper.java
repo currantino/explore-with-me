@@ -1,8 +1,6 @@
 package ru.practicum.ewm.main.server.compilation.dto.mapper;
 
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Named;
+import org.mapstruct.*;
 import ru.practicum.ewm.main.server.compilation.dto.CompilationDto;
 import ru.practicum.ewm.main.server.compilation.dto.NewCompilationDto;
 import ru.practicum.ewm.main.server.compilation.entity.Compilation;
@@ -18,9 +16,13 @@ public interface CompilationMapper {
     Compilation toEntity(NewCompilationDto dto);
 
     @Named("idToEvent")
-    static Event idToEvent(Long id) {
+    default Event idToEvent(Long id) {
         return Event.builder()
                 .id(id)
                 .build();
     }
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    Compilation partialUpdate(CompilationDto compilationDto, @MappingTarget Compilation compilation);
+
 }

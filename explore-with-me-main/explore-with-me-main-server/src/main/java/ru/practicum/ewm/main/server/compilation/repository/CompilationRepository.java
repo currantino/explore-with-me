@@ -1,5 +1,7 @@
 package ru.practicum.ewm.main.server.compilation.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -15,4 +17,15 @@ public interface CompilationRepository extends JpaRepository<Compilation, Long> 
             "WHERE " +
             "   c.id = :compId")
     int deleteByIdAndCountDeleted(Long compId);
+
+    @Query("SELECT " +
+            "   c " +
+            "FROM " +
+            "   Compilation c " +
+            "WHERE " +
+            "   c.pinned = :pinned")
+    Page<Compilation> findAllByPinned(
+            Boolean pinned,
+            Pageable pageRequest
+    );
 }

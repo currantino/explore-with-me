@@ -6,12 +6,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.ewm.main.server.category.entity.Category;
 import ru.practicum.ewm.main.server.category.repository.CategoryRepository;
-import ru.practicum.ewm.main.server.event.controller.EventShortDto;
 import ru.practicum.ewm.main.server.event.dto.*;
 import ru.practicum.ewm.main.server.event.dto.mapper.EventMapper;
 import ru.practicum.ewm.main.server.event.entity.Event;
 import ru.practicum.ewm.main.server.event.repository.EventRepository;
-import ru.practicum.ewm.main.server.event.state.State;
+import ru.practicum.ewm.main.server.event.state.EventState;
 import ru.practicum.ewm.main.server.exception.*;
 import ru.practicum.ewm.main.server.location.dto.mapper.LocationMapper;
 import ru.practicum.ewm.main.server.location.entity.Location;
@@ -61,7 +60,7 @@ public class EventService {
         event.setInitiator(initiator);
         event.setCategory(category);
         event.setLocation(location);
-        event.setState(State.PENDING);
+        event.setState(EventState.PENDING);
         event.setCreatedOn(now());
         Event saved = eventRepository.save(event);
         return eventMapper.toFullDto(saved);
@@ -169,7 +168,7 @@ public class EventService {
 
     private void applyStateAction(StateAction stateAction, Event event) {
         if (Objects.requireNonNull(stateAction) == StateAction.CANCEL_REVIEW) {
-            event.setState(State.CANCELED);
+            event.setState(EventState.CANCELED);
         }
     }
 

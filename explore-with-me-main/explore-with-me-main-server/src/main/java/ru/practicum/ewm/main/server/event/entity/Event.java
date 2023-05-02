@@ -2,7 +2,7 @@ package ru.practicum.ewm.main.server.event.entity;
 
 import lombok.*;
 import ru.practicum.ewm.main.server.category.entity.Category;
-import ru.practicum.ewm.main.server.event.state.State;
+import ru.practicum.ewm.main.server.event.state.EventState;
 import ru.practicum.ewm.main.server.location.entity.Location;
 import ru.practicum.ewm.main.server.user.entity.User;
 
@@ -61,7 +61,7 @@ public class Event {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "state")
-    private State state;
+    private EventState state;
     @Column(name = "title")
     private String title;
     @Column(name = "views")

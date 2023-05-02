@@ -8,9 +8,9 @@ import org.springframework.stereotype.Service;
 import ru.practicum.ewm.main.server.user.dto.create.CreateUserRequestDto;
 import ru.practicum.ewm.main.server.user.dto.create.CreateUserResponseDto;
 import ru.practicum.ewm.main.server.user.dto.read.ReadUserDto;
-import ru.practicum.ewm.main.server.user.dto.read.ReadUserMapper;
 import ru.practicum.ewm.main.server.user.entity.User;
 import ru.practicum.ewm.main.server.user.mapper.CreateUserMapper;
+import ru.practicum.ewm.main.server.user.mapper.ReadUserMapper;
 import ru.practicum.ewm.main.server.user.repository.UserRepository;
 
 import java.util.List;

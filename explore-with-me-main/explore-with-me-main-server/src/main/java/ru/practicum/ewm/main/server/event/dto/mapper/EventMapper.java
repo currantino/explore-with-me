@@ -1,9 +1,9 @@
 package ru.practicum.ewm.main.server.event.dto.mapper;
 
 import org.mapstruct.*;
-import ru.practicum.ewm.main.server.event.controller.EventShortDto;
 import ru.practicum.ewm.main.server.event.dto.CreateEventRequestDto;
 import ru.practicum.ewm.main.server.event.dto.EventFullDto;
+import ru.practicum.ewm.main.server.event.dto.EventShortDto;
 import ru.practicum.ewm.main.server.event.dto.UpdateEventRequestDto;
 import ru.practicum.ewm.main.server.event.entity.Event;
 import ru.practicum.ewm.main.server.location.dto.mapper.LocationMapper;

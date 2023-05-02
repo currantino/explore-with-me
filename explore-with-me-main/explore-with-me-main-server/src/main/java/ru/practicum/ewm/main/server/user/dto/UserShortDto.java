@@ -1,4 +1,4 @@
-package ru.practicum.ewm.main.server.event.controller;
+package ru.practicum.ewm.main.server.user.dto;
 
 import lombok.Value;
 

@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.ewm.main.server.event.entity.Event;
 import ru.practicum.ewm.main.server.event.repository.CustomEventRepository;
-import ru.practicum.ewm.main.server.event.state.State;
+import ru.practicum.ewm.main.server.event.state.EventState;
 import ru.practicum.ewm.main.server.exception.*;
 import ru.practicum.ewm.main.server.participationrequest.entity.ParticipationRequest;
 import ru.practicum.ewm.main.server.participationrequest.entity.ParticipationRequestDto;
@@ -77,7 +77,7 @@ public class ParticipationRequestService {
     }
 
     private void checkIfEventIsPublished(Event event) {
-        if (event.getState() != State.PUBLISHED) {
+        if (event.getState() != EventState.PUBLISHED) {
             throw new EventNotPublishedException("You cannot request participation in event that is not published yet.");
         }
     }

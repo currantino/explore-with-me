@@ -1,7 +1,7 @@
 package ru.practicum.ewm.main.server.compilation.dto;
 
 import lombok.Value;
-import ru.practicum.ewm.main.server.event.controller.EventShortDto;
+import ru.practicum.ewm.main.server.event.dto.EventShortDto;
 
 import java.util.List;
 

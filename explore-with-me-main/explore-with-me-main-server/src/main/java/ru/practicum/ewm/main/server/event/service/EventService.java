@@ -7,21 +7,17 @@ import org.springframework.stereotype.Service;
 import ru.practicum.ewm.main.server.category.entity.Category;
 import ru.practicum.ewm.main.server.category.repository.CategoryRepository;
 import ru.practicum.ewm.main.server.event.controller.EventShortDto;
-import ru.practicum.ewm.main.server.event.dto.CreateEventRequestDto;
-import ru.practicum.ewm.main.server.event.dto.EventFullDto;
-import ru.practicum.ewm.main.server.event.dto.StateAction;
-import ru.practicum.ewm.main.server.event.dto.UpdateEventRequestDto;
+import ru.practicum.ewm.main.server.event.dto.*;
 import ru.practicum.ewm.main.server.event.dto.mapper.EventMapper;
 import ru.practicum.ewm.main.server.event.entity.Event;
 import ru.practicum.ewm.main.server.event.repository.EventRepository;
 import ru.practicum.ewm.main.server.event.state.State;
-import ru.practicum.ewm.main.server.exception.CategoryNotFoundException;
-import ru.practicum.ewm.main.server.exception.EventNotAccessibleException;
-import ru.practicum.ewm.main.server.exception.EventNotFoundException;
-import ru.practicum.ewm.main.server.exception.UserNotFoundException;
+import ru.practicum.ewm.main.server.exception.*;
 import ru.practicum.ewm.main.server.location.dto.mapper.LocationMapper;
 import ru.practicum.ewm.main.server.location.entity.Location;
 import ru.practicum.ewm.main.server.location.repository.LocationRepository;
+import ru.practicum.ewm.main.server.participationrequest.dto.ParticipationRequestStatus;
+import ru.practicum.ewm.main.server.participationrequest.entity.ParticipationRequest;
 import ru.practicum.ewm.main.server.participationrequest.entity.ParticipationRequestDto;
 import ru.practicum.ewm.main.server.participationrequest.entity.ParticipationRequestMapper;
 import ru.practicum.ewm.main.server.participationrequest.repository.ParticipationRequestRepository;
@@ -100,7 +96,7 @@ public class EventService {
         return eventRepository
                 .findById(eventId)
                 .map(e -> {
-                            checkThatRequesterIsEventInitiator(e.getInitiator().getId(), userId);
+                            checkThatRequesterIsEventInitiator(userId, e.getInitiator().getId());
                             return eventMapper.toFullDto(e);
                         }
                 )
@@ -116,7 +112,7 @@ public class EventService {
         Event event = eventRepository
                 .findById(eventId)
                 .map(e -> {
-                            checkThatRequesterIsEventInitiator(e.getInitiator().getId(), userId);
+                            checkThatRequesterIsEventInitiator(userId, e.getInitiator().getId());
                             return e;
                         }
                 )
@@ -134,6 +130,41 @@ public class EventService {
                 .findAllByEventId(eventId).stream()
                 .map(participationRequestMapper::toDto)
                 .collect(toList());
+    }
+
+    public EventRequestStatusUpdateResult updateParticipationRequestStatus(
+            Long userId,
+            Long eventId,
+            EventStatusUpdateRequest updateRequest
+    ) {
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new EventNotFoundException("Could not find the requested event."));
+
+        checkThatRequesterIsEventInitiator(userId, event.getInitiator().getId());
+
+        List<ParticipationRequest> participationRequests = participationRequestRepository
+                .findAllById(updateRequest.getRequestIds());
+        ParticipationRequestStatus newStatus = updateRequest.getStatus();
+        participationRequests.forEach(
+                request -> {
+                    if (!ParticipationRequestStatus.PENDING.equals(request.getStatus())) {
+                        throw new ParticipationRequestStatusException("Request must have status PENDING");
+                    }
+                    if (event.getParticipantLimit() == event.getConfirmedRequests() + 1L) {
+                        rejectAllPendingRequestsByEventId(eventId);
+                        return;
+                    }
+                    request.setStatus(newStatus);
+                }
+        );
+        //TODO: HOW TO FORM RETURN VALUE
+        return null;
+
+    }
+
+    private void rejectAllPendingRequestsByEventId(Long eventId) {
+        participationRequestRepository
+                .updateStatusByEventIdAndPending(eventId, ParticipationRequestStatus.REJECTED);
     }
 
     private void applyStateAction(StateAction stateAction, Event event) {

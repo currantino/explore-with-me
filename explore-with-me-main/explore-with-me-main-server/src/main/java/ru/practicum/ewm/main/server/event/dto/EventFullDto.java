@@ -6,11 +6,10 @@ import ru.practicum.ewm.main.server.event.state.EventState;
 import ru.practicum.ewm.main.server.location.dto.LocationDto;
 import ru.practicum.ewm.main.server.user.dto.read.ReadUserDto;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Value
-public class EventFullDto implements Serializable {
+public class EventFullDto {
     Long id;
     String annotation;
     CategoryEventDto category;

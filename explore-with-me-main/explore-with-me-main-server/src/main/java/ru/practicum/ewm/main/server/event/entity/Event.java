@@ -1,8 +1,6 @@
 package ru.practicum.ewm.main.server.event.entity;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import ru.practicum.ewm.main.server.category.entity.Category;
 import ru.practicum.ewm.main.server.event.state.State;
 import ru.practicum.ewm.main.server.location.entity.Location;
@@ -15,6 +13,9 @@ import java.time.LocalDateTime;
 @Table(name = "event")
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

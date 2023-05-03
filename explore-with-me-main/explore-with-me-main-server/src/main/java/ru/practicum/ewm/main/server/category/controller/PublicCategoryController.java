@@ -27,7 +27,7 @@ public class PublicCategoryController {
             Integer from,
             @RequestParam(
                     name = "size",
-                    defaultValue = "0"
+                    defaultValue = "10"
             )
             Integer size
     ) {

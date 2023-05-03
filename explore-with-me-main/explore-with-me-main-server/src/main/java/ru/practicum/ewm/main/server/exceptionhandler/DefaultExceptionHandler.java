@@ -6,6 +6,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import ru.practicum.ewm.main.server.exception.ConflictException;
 import ru.practicum.ewm.main.server.exception.DataNotFoundException;
 
 import static java.time.LocalDateTime.now;
@@ -41,6 +42,19 @@ public class DefaultExceptionHandler {
     @ExceptionHandler()
     @ResponseStatus(CONFLICT)
     public ResponseEntity<ApiError> handleDataIntegrityViolationException(final DataIntegrityViolationException e) {
+        return ResponseEntity
+                .status(CONFLICT)
+                .body(ApiError.builder()
+                        .reason("Data integrity was violated.")
+                        .message(e.getMessage())
+                        .timestamp(now())
+                        .status(CONFLICT)
+                        .build());
+    }
+
+    @ExceptionHandler()
+    @ResponseStatus(CONFLICT)
+    public ResponseEntity<ApiError> handleConflictException(final ConflictException e) {
         return ResponseEntity
                 .status(CONFLICT)
                 .body(ApiError.builder()

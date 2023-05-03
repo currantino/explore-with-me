@@ -167,8 +167,13 @@ public class EventService {
     }
 
     private void applyStateAction(StateAction stateAction, Event event) {
-        if (Objects.requireNonNull(stateAction) == StateAction.CANCEL_REVIEW) {
-            event.setState(EventState.CANCELED);
+        switch (stateAction) {
+            case CANCEL_REVIEW: {
+                event.setState(EventState.CANCELED);
+                return;
+            }
+            case SEND_TO_REVIEW:
+                event.setState(EventState.PENDING);
         }
     }
 

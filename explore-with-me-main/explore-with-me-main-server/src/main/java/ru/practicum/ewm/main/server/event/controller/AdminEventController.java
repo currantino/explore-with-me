@@ -2,11 +2,8 @@ package ru.practicum.ewm.main.server.event.controller;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import ru.practicum.ewm.main.server.event.dto.AdminEventDto;
+import org.springframework.web.bind.annotation.*;
+import ru.practicum.ewm.main.server.event.dto.EventFullDto;
 import ru.practicum.ewm.main.server.event.service.AdminEventService;
 
 import java.time.LocalDateTime;
@@ -20,7 +17,7 @@ public class AdminEventController {
     private final AdminEventService adminEventService;
 
     @GetMapping
-    public List<AdminEventDto> getEvents(
+    public List<EventFullDto> getEvents(
             @RequestParam(
                     name = "users",
                     defaultValue = ""
@@ -69,5 +66,13 @@ public class AdminEventController {
                 size);
     }
 
-
+    @PatchMapping("/{eventId}")
+    public EventFullDto patchEvent(
+            @PathVariable(name = "eventId")
+            Long eventId,
+            @RequestBody
+            UpdateEventAdminRequestDto requestDto
+    ) {
+        return adminEventService.patchEvent(eventId, requestDto);
+    }
 }

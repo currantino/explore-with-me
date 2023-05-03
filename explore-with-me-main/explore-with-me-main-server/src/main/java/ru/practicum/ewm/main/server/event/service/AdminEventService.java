@@ -80,7 +80,7 @@ public class AdminEventService {
                 return;
             }
             case REJECT_EVENT:
-                if (!EventState.PUBLISHED.equals(event.getState())) {
+                if (!EventState.PENDING.equals(event.getState())) {
                     throw new InvalidStateActionException("You cannot reject event if it is already published.");
                 }
                 event.setState(EventState.REJECTED);

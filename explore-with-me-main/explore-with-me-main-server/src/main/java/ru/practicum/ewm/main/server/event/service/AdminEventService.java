@@ -72,7 +72,7 @@ public class AdminEventService {
     ) {
         switch (stateAction) {
             case PUBLISH_EVENT: {
-                if (EventState.PENDING.equals(event.getState())) {
+                if (!EventState.PENDING.equals(event.getState())) {
                     throw new InvalidStateActionException("You cannot publish event if its state is not PENDING.");
                 }
                 event.setState(EventState.PUBLISHED);
@@ -80,7 +80,7 @@ public class AdminEventService {
                 return;
             }
             case REJECT_EVENT:
-                if (EventState.PUBLISHED.equals(event.getState())) {
+                if (!EventState.PUBLISHED.equals(event.getState())) {
                     throw new InvalidStateActionException("You cannot reject event if it is already published.");
                 }
                 event.setState(EventState.REJECTED);

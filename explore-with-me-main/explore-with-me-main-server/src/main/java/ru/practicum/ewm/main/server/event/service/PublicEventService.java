@@ -10,6 +10,7 @@ import ru.practicum.ewm.main.server.event.entity.Event;
 import ru.practicum.ewm.main.server.event.repository.EventRepository;
 import ru.practicum.ewm.main.server.exception.EventNotFoundException;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -21,6 +22,7 @@ public class PublicEventService {
     private final EventRepository eventRepository;
     private final EventMapper eventMapper;
 
+    @Transactional
     public List<EventShortDto> getEventsFiltered(
             String searchQuery,
             List<Long> categoryIds,
@@ -54,6 +56,7 @@ public class PublicEventService {
                 .collect(toList());
     }
 
+    @Transactional
     public EventFullDto getEventById(Long eventId) {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new EventNotFoundException("Could not find the requested event."));

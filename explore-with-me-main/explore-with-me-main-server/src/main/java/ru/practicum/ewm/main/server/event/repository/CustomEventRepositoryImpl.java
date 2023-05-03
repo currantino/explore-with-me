@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.time.LocalTime.now;
+import static java.time.LocalDateTime.now;
 
 public class CustomEventRepositoryImpl extends SimpleJpaRepository<Event, Long> implements CustomEventRepository {
     @PersistenceContext
@@ -164,7 +164,7 @@ public class CustomEventRepositoryImpl extends SimpleJpaRepository<Event, Long> 
         if (rangeStart == null || rangeEnd == null) {
             predicates.add(
                     cb.greaterThanOrEqualTo(
-                            root.get("event_date"),
+                            root.get("eventDate"),
                             now()
                     )
             );
@@ -173,7 +173,7 @@ public class CustomEventRepositoryImpl extends SimpleJpaRepository<Event, Long> 
         if (rangeStart != null) {
             predicates.add(
                     cb.greaterThanOrEqualTo(
-                            root.get("event_date"),
+                            root.get("eventDate"),
                             rangeStart
                     )
             );
@@ -182,7 +182,7 @@ public class CustomEventRepositoryImpl extends SimpleJpaRepository<Event, Long> 
         if (rangeEnd != null) {
             predicates.add(
                     cb.lessThanOrEqualTo(
-                            root.get("event_date"),
+                            root.get("eventDate"),
                             rangeEnd
                     )
             );
@@ -193,7 +193,7 @@ public class CustomEventRepositoryImpl extends SimpleJpaRepository<Event, Long> 
 
         switch (sort) {
             case EVENT_DATE:
-                sortingOrder = cb.asc(root.get("event_date"));
+                sortingOrder = cb.asc(root.get("eventDate"));
                 break;
             case VIEWS:
                 sortingOrder = cb.desc(root.get("views"));

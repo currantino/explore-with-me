@@ -1,6 +1,28 @@
 version: '3.1'
 services:
 
+  main-server:
+    container_name: main-server-container
+    build: explore-with-me-main/explore-with-me-main-server
+    depends_on:
+      - main-db
+    ports:
+      - "8080:8080"
+    environment:
+      POSTGRES_USER: kitty
+      POSTGRES_PASSWORD: kitty
+      SPRING_DATASOURCE_URL: jdbc:postgresql://main-db:5432/explore-with-me-main
+
+  main-db:
+    container_name: main-db-container
+    image: postgres:14-alpine
+    ports:
+      - "6542:5432"
+    environment:
+      POSTGRES_DB: explore-with-me-main
+      POSTGRES_USER: kitty
+      POSTGRES_PASSWORD: kitty
+
   stats-server:
     container_name: stats-server-container
     build: explore-with-me-stats/explore-with-me-stats-service

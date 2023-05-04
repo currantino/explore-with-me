@@ -27,7 +27,7 @@ public class AdminEventService {
     private final EventMapper eventMapper;
 
 
-    public List<EventFullDto> getEvents(List<Long> userIds, List<String> states, List<Long> categoryIds, LocalDateTime rangeStart, LocalDateTime rangeEnd, Integer from, Integer size) {
+    public List<EventFullDto> getEvents(List<Long> userIds, List<EventState> states, List<Long> categoryIds, LocalDateTime rangeStart, LocalDateTime rangeEnd, Integer from, Integer size) {
         return eventRepository.getEventsForAdmin(
                         userIds,
                         states,

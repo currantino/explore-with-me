@@ -31,7 +31,7 @@ public class CustomEventRepositoryImpl extends SimpleJpaRepository<Event, Long> 
 
     public List<Event> getEventsForAdmin(
             List<Long> users,
-            List<String> states,
+            List<EventState> states,
             List<Long> categories,
             LocalDateTime rangeStart,
             LocalDateTime rangeEnd,
@@ -64,7 +64,7 @@ public class CustomEventRepositoryImpl extends SimpleJpaRepository<Event, Long> 
         if (rangeStart != null) {
             predicates.add(
                     cb.greaterThanOrEqualTo(
-                            root.get("event_date"),
+                            root.get("eventDate"),
                             rangeStart
                     )
             );
@@ -74,7 +74,7 @@ public class CustomEventRepositoryImpl extends SimpleJpaRepository<Event, Long> 
         if (rangeEnd != null) {
             predicates.add(
                     cb.lessThanOrEqualTo(
-                            root.get("event_date"),
+                            root.get("eventDate"),
                             rangeEnd
                     )
             );

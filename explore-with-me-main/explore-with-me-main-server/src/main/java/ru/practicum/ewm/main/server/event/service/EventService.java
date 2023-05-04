@@ -160,18 +160,15 @@ public class EventService {
                     }
                     if (Objects.equals(event.getParticipantLimit(), event.getConfirmedRequests())) {
                         rejectAllPendingRequestsByEventId(eventId);
-                        return;
+                        throw new ParticipantLimitReachedException("Participant limit was reached.");
                     }
                     switch (newStatus) {
                         case CONFIRMED: {
-                            request.setStatus(newStatus);
-                            event.setConfirmedRequests(event.getConfirmedRequests() + 1);
-                            confirmedRequests.add(participationRequestMapper.toDto(request));
+                            confirmRequest(event, newStatus, confirmedRequests, request);
                             break;
                         }
                         case REJECTED: {
-                            request.setStatus(newStatus);
-                            rejectedRequests.add(participationRequestMapper.toDto(request));
+                            rejectRequest(newStatus, rejectedRequests, request);
                             break;
                         }
                     }
@@ -183,6 +180,17 @@ public class EventService {
                 .confirmedRequests(confirmedRequests)
                 .rejectedRequests(rejectedRequests)
                 .build();
+    }
+
+    private void rejectRequest(ParticipationRequestStatus newStatus, List<ParticipationRequestDto> rejectedRequests, ParticipationRequest request) {
+        request.setStatus(newStatus);
+        rejectedRequests.add(participationRequestMapper.toDto(request));
+    }
+
+    private void confirmRequest(Event event, ParticipationRequestStatus newStatus, List<ParticipationRequestDto> confirmedRequests, ParticipationRequest request) {
+        request.setStatus(newStatus);
+        event.setConfirmedRequests(event.getConfirmedRequests() + 1);
+        confirmedRequests.add(participationRequestMapper.toDto(request));
     }
 
     private void rejectAllPendingRequestsByEventId(Long eventId) {

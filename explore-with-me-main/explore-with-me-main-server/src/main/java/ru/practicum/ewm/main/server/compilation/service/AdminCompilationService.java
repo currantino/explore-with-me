@@ -27,7 +27,6 @@ public class AdminCompilationService {
                 .toDto(
                         compilationRepository
                                 .save(compilation)
-//TODO: ADD REFRESH
                 );
     }
 

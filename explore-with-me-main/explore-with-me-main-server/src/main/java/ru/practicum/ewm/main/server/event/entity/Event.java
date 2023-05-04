@@ -55,7 +55,6 @@ public class Event {
 
     @Column(name = "published_on")
     private LocalDateTime publishedOn;
-    @Getter(AccessLevel.NONE)
     @Column(name = "is_request_moderated")
     private Boolean requestModeration = true;
 
@@ -66,8 +65,4 @@ public class Event {
     private String title;
     @Column(name = "views")
     private Long views = 0L;
-
-    public Boolean isRequestModerated() {
-        return requestModeration;
-    }
 }

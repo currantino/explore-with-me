@@ -41,7 +41,7 @@ public class ParticipationRequestService {
         checkIfRequesterIsNotInitiatorOfEvent(userId, event);
         checkIfEventIsPublished(event);
         ParticipationRequestStatus status;
-        if (event.isRequestModerated()) {
+        if (event.getRequestModeration()) {
             status = PENDING;
         } else {
             status = CONFIRMED;

@@ -13,8 +13,8 @@ public class UpdateEventAdminRequestDto {
     LocalDateTime eventDate;
     LocationDto location;
     Boolean paid;
-    Integer participantLimit = 0;
-    Boolean requestModeration = true;
+    Integer participantLimit;
+    Boolean requestModeration;
     String title;
     AdminStateAction stateAction;
 }

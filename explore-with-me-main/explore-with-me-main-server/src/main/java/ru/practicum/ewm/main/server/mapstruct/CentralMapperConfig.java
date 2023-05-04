@@ -1,11 +1,13 @@
 package ru.practicum.ewm.main.server.mapstruct;
 
+import org.mapstruct.Builder;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.MapperConfig;
 
 @MapperConfig(
         componentModel = "spring",
-        injectionStrategy = InjectionStrategy.CONSTRUCTOR
+        injectionStrategy = InjectionStrategy.CONSTRUCTOR,
+        builder = @Builder(disableBuilder = true)
 )
 public interface CentralMapperConfig {
 

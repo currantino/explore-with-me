@@ -23,9 +23,9 @@ public class CreateEventRequestDto {
     @Valid
     @NotNull(message = "Event location must not be null.")
     LocationDto location;
-    Boolean paid = false;
+    Boolean paid;
     @PositiveOrZero(message = "Event participant limit must be a positive integer or zero (no limit)")
-    Integer participantLimit = 0;
+    Integer participantLimit;
     Boolean requestModeration;
     @NotBlank(message = "Event title must not be blank.")
     String title;

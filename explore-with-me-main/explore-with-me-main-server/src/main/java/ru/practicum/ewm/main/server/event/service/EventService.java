@@ -117,8 +117,14 @@ public class EventService {
                         }
                 )
                 .orElseThrow(() -> new EventNotFoundException("Could not find the requested event."));
+        if (EventState.PUBLISHED.equals(event.getState())) {
+            throw new EventAlreadyPublishedException("You cannot update event if it is already published.");
+        }
         eventMapper.partialUpdate(updateDto, event);
-        applyStateAction(updateDto.getStateAction(), event);
+        StateAction stateAction = updateDto.getStateAction();
+        if (stateAction != null) {
+            applyStateAction(updateDto.getStateAction(), event);
+        }
         Event saved = eventRepository.save(event);
         return eventMapper.toFullDto(saved);
     }

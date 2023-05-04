@@ -23,6 +23,7 @@ import ru.practicum.ewm.main.server.participationrequest.repository.Participatio
 import ru.practicum.ewm.main.server.user.entity.User;
 import ru.practicum.ewm.main.server.user.repository.UserRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -141,24 +142,41 @@ public class EventService {
 
         checkThatRequesterIsEventInitiator(userId, event.getInitiator().getId());
 
-        List<ParticipationRequest> participationRequests = participationRequestRepository
+        List<ParticipationRequest> participationRequestsToBeUpdated = participationRequestRepository
                 .findAllById(updateRequest.getRequestIds());
         ParticipationRequestStatus newStatus = updateRequest.getStatus();
-        participationRequests.forEach(
+        List<ParticipationRequestDto> confirmedRequests = new ArrayList<>();
+        List<ParticipationRequestDto> rejectedRequests = new ArrayList<>();
+        participationRequestsToBeUpdated.forEach(
                 request -> {
                     if (!ParticipationRequestStatus.PENDING.equals(request.getStatus())) {
                         throw new ParticipationRequestStatusException("Request must have status PENDING");
                     }
-                    if (event.getParticipantLimit() == event.getConfirmedRequests() + 1L) {
+                    if (Objects.equals(event.getParticipantLimit(), event.getConfirmedRequests() + 1L)) {
                         rejectAllPendingRequestsByEventId(eventId);
                         return;
                     }
-                    request.setStatus(newStatus);
+                    switch (newStatus) {
+                        case CONFIRMED: {
+                            request.setStatus(newStatus);
+                            event.setConfirmedRequests(event.getConfirmedRequests() + 1);
+                            confirmedRequests.add(participationRequestMapper.toDto(request));
+                            break;
+                        }
+                        case REJECTED: {
+                            request.setStatus(newStatus);
+                            rejectedRequests.add(participationRequestMapper.toDto(request));
+                            break;
+                        }
+                    }
                 }
         );
-        //TODO: HOW TO FORM RETURN VALUE
-        return null;
-
+        participationRequestRepository.saveAll(participationRequestsToBeUpdated);
+        eventRepository.save(event);
+        return EventRequestStatusUpdateResult.builder()
+                .confirmedRequests(confirmedRequests)
+                .rejectedRequests(rejectedRequests)
+                .build();
     }
 
     private void rejectAllPendingRequestsByEventId(Long eventId) {

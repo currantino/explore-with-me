@@ -1,7 +1,6 @@
 package ru.practicum.ewm.main.server.event.dto;
 
 import lombok.Value;
-import ru.practicum.ewm.main.server.event.validation.NotEarlierThanTwoHours;
 import ru.practicum.ewm.main.server.location.dto.LocationDto;
 
 import javax.validation.Valid;
@@ -20,7 +19,6 @@ public class CreateEventRequestDto {
     @NotBlank(message = "Event description must not be null.")
     String description;
     @NotNull(message = "Event date must not be null.")
-    @NotEarlierThanTwoHours(message = "Event must not start in less than two hours.")
     LocalDateTime eventDate;
     @Valid
     @NotNull(message = "Event location must not be null.")

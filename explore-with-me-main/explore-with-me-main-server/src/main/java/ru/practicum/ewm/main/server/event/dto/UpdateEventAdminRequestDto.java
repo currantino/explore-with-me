@@ -1,7 +1,6 @@
-package ru.practicum.ewm.main.server.event.controller;
+package ru.practicum.ewm.main.server.event.dto;
 
 import lombok.Value;
-import ru.practicum.ewm.main.server.event.dto.AdminStateAction;
 import ru.practicum.ewm.main.server.location.dto.LocationDto;
 
 import java.time.LocalDateTime;

@@ -1,7 +1,6 @@
 package ru.practicum.ewm.main.server.event.dto;
 
 import lombok.Value;
-import ru.practicum.ewm.main.server.event.validation.NotEarlierThanTwoHours;
 import ru.practicum.ewm.main.server.location.dto.LocationDto;
 import ru.practicum.ewm.main.server.validation.NotBlankOrNull;
 import ru.practicum.ewm.main.server.validation.PositiveOrZeroOrNull;
@@ -17,7 +16,6 @@ public class UpdateEventRequestDto {
     @NotBlankOrNull
     String description;
     Long category;
-    @NotEarlierThanTwoHours
     LocalDateTime eventDate;
     @Valid
     LocationDto location;

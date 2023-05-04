@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.main.server.event.dto.EventFullDto;
+import ru.practicum.ewm.main.server.event.dto.UpdateEventAdminRequestDto;
 import ru.practicum.ewm.main.server.event.service.AdminEventService;
 
 import java.time.LocalDateTime;

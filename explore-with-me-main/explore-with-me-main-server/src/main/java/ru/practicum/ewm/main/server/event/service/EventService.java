@@ -152,7 +152,7 @@ public class EventService {
                     if (!ParticipationRequestStatus.PENDING.equals(request.getStatus())) {
                         throw new ParticipationRequestStatusException("Request must have status PENDING");
                     }
-                    if (Objects.equals(event.getParticipantLimit(), event.getConfirmedRequests() + 1)) {
+                    if (Objects.equals(event.getParticipantLimit(), event.getConfirmedRequests())) {
                         rejectAllPendingRequestsByEventId(eventId);
                         return;
                     }

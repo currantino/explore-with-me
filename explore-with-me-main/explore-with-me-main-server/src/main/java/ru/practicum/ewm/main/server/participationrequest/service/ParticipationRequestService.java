@@ -6,6 +6,7 @@ import ru.practicum.ewm.main.server.event.entity.Event;
 import ru.practicum.ewm.main.server.event.repository.CustomEventRepository;
 import ru.practicum.ewm.main.server.event.state.EventState;
 import ru.practicum.ewm.main.server.exception.*;
+import ru.practicum.ewm.main.server.participationrequest.dto.ParticipationRequestStatus;
 import ru.practicum.ewm.main.server.participationrequest.entity.ParticipationRequest;
 import ru.practicum.ewm.main.server.participationrequest.entity.ParticipationRequestDto;
 import ru.practicum.ewm.main.server.participationrequest.entity.ParticipationRequestMapper;
@@ -33,14 +34,22 @@ public class ParticipationRequestService {
                 .orElseThrow(() -> new UserNotFoundException("Could not find the requested user."));
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new EventNotFoundException("Could not find the requested event."));
-        if (Objects.equals(event.getConfirmedRequests(), event.getParticipantLimit())) {
+        if (!Objects.equals(event.getParticipantLimit(), 0)
+                && Objects.equals(event.getParticipantLimit(), event.getConfirmedRequests())) {
             throw new ParticipantLimitReachedException("Reached participant limit of the event.");
         }
         checkIfRequesterIsNotInitiatorOfEvent(userId, event);
         checkIfEventIsPublished(event);
+        ParticipationRequestStatus status;
+        if (event.isRequestModerated()) {
+            status = PENDING;
+        } else {
+            status = CONFIRMED;
+            event.setConfirmedRequests(event.getConfirmedRequests() + 1);
+        }
         ParticipationRequest request = ParticipationRequest
                 .builder()
-                .status(event.isRequestModerated() ? PENDING : CONFIRMED)
+                .status(status)
                 .event(event)
                 .requester(requester)
                 .created(now())
@@ -78,7 +87,7 @@ public class ParticipationRequestService {
 
     private void checkIfEventIsPublished(Event event) {
         if (event.getState() != EventState.PUBLISHED) {
-            throw new EventNotPublishedException("You cannot request participation in event that is not published yet.");
+            throw new EventNotPublishedException("You cannot request participation in event that is not published.");
         }
     }
 

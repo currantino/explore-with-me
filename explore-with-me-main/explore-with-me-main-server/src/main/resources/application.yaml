@@ -12,3 +12,6 @@ spring:
     password: kitty
     url: jdbc:postgresql://localhost:5432/explore-with-me-main
     driver-class-name: org.postgresql.Driver
+
+stats-server:
+  url: ${STATS_SERVER_URL}

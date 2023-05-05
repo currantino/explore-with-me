@@ -6,7 +6,9 @@ import ru.practicum.ewm.main.server.event.dto.EventFullDto;
 import ru.practicum.ewm.main.server.event.dto.EventShortDto;
 import ru.practicum.ewm.main.server.event.dto.EventSort;
 import ru.practicum.ewm.main.server.event.service.PublicEventService;
+import ru.practicum.ewm.stats.client.endpointhit.EndPointHitClient;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -17,13 +19,16 @@ import static org.springframework.http.HttpStatus.OK;
 @RequestMapping("/events")
 public class PublicEventController {
     private final PublicEventService eventService;
+    private final EndPointHitClient endPointHitClient;
 
     @ResponseStatus(OK)
     @GetMapping("/{eventId}")
     public EventFullDto getEventById(
             @PathVariable(name = "eventId")
-            Long eventId
+            Long eventId,
+            HttpServletRequest request
     ) {
+        endPointHitClient.createEndPointHit(request);
         return eventService.getEventById(eventId);
     }
 
@@ -75,8 +80,10 @@ public class PublicEventController {
                     name = "size",
                     defaultValue = "10"
             )
-            Integer size
+            Integer size,
+            HttpServletRequest request
     ) {
+        endPointHitClient.createEndPointHit(request);
         return eventService.getEventsFiltered(
                 searchQuery,
                 categoryIds,

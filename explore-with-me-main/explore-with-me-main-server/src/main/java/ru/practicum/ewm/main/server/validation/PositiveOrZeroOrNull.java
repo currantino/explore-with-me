@@ -5,7 +5,7 @@ import javax.validation.Payload;
 import java.lang.annotation.*;
 
 @Documented
-@Constraint(validatedBy = {PositiveOrZeroOrNullValidator.class, PositiveOrZeroOrNullIntegerValidator.class})
+@Constraint(validatedBy = {PositiveOrZeroOrNullLongValidator.class, PositiveOrZeroOrNullIntegerValidator.class})
 @Target({ElementType.METHOD, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface PositiveOrZeroOrNull {

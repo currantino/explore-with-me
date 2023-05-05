@@ -2,7 +2,7 @@ package ru.practicum.ewm.main.server.event.dto;
 
 import lombok.Builder;
 import lombok.Value;
-import ru.practicum.ewm.main.server.participationrequest.entity.ParticipationRequestDto;
+import ru.practicum.ewm.main.server.participationrequest.dto.ParticipationRequestDto;
 
 import java.util.List;
 

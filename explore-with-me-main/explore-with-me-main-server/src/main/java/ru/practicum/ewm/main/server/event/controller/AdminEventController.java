@@ -5,8 +5,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.main.server.event.dto.EventFullDto;
 import ru.practicum.ewm.main.server.event.dto.UpdateEventAdminRequestDto;
+import ru.practicum.ewm.main.server.event.entity.state.EventState;
 import ru.practicum.ewm.main.server.event.service.AdminEventService;
-import ru.practicum.ewm.main.server.event.state.EventState;
 
 import java.time.LocalDateTime;
 import java.util.List;

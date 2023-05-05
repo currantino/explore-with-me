@@ -64,4 +64,16 @@ public class DefaultExceptionHandler {
                         .status(CONFLICT)
                         .build());
     }
+
+    @ExceptionHandler()
+    @ResponseStatus(BAD_REQUEST)
+    public ResponseEntity<ApiError> handleRuntimeException(final RuntimeException e) {
+        return ResponseEntity
+                .status(BAD_REQUEST)
+                .body(ApiError.builder()
+                        .reason("Unexpected error occured!")
+                        .message(e.getMessage())
+                        .timestamp(now())
+                        .build());
+    }
 }

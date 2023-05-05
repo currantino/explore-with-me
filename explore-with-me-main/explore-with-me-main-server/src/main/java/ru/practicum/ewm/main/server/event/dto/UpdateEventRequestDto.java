@@ -1,6 +1,7 @@
 package ru.practicum.ewm.main.server.event.dto;
 
 import lombok.Value;
+import ru.practicum.ewm.main.server.event.dto.stateaction.PrivateEventStateAction;
 import ru.practicum.ewm.main.server.location.dto.LocationDto;
 import ru.practicum.ewm.main.server.validation.NotBlankOrNull;
 import ru.practicum.ewm.main.server.validation.PositiveOrZeroOrNull;
@@ -25,5 +26,5 @@ public class UpdateEventRequestDto {
     Boolean requestModeration;
     @NotBlankOrNull
     String title;
-    StateAction stateAction;
+    PrivateEventStateAction stateAction;
 }

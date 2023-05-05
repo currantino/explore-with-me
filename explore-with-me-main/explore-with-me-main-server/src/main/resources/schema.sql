@@ -54,7 +54,7 @@ CREATE TABLE IF NOT EXISTS event
     CONSTRAINT fk_event_user FOREIGN KEY (initiator_id) REFERENCES users (user_id),
     CONSTRAINT fk_event_location FOREIGN KEY (location_id) REFERENCES location (location_id),
     CONSTRAINT fk_event_category FOREIGN KEY (category_id) REFERENCES category (category_id),
-    CONSTRAINT event_date_constraint CHECK ( event_date >= published_on + INTERVAL '1 hour'),
+    CONSTRAINT event_date_publication_date_constraint CHECK ( event_date >= published_on + INTERVAL '1 hour'),
     CONSTRAINT event_date_min CHECK ( event_date >= (NOW()::TIMESTAMP + INTERVAL '2 hours'))
 );
 

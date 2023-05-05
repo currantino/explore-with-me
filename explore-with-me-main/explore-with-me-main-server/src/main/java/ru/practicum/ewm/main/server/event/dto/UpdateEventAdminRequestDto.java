@@ -1,6 +1,7 @@
 package ru.practicum.ewm.main.server.event.dto;
 
 import lombok.Value;
+import ru.practicum.ewm.main.server.event.dto.stateaction.AdminEventStateAction;
 import ru.practicum.ewm.main.server.location.dto.LocationDto;
 
 import java.time.LocalDateTime;
@@ -16,5 +17,5 @@ public class UpdateEventAdminRequestDto {
     Integer participantLimit;
     Boolean requestModeration;
     String title;
-    AdminStateAction stateAction;
+    AdminEventStateAction stateAction;
 }

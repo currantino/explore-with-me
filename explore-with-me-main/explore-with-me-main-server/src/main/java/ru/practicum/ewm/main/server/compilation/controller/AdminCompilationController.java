@@ -5,6 +5,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.main.server.compilation.dto.CompilationDto;
 import ru.practicum.ewm.main.server.compilation.dto.NewCompilationDto;
+import ru.practicum.ewm.main.server.compilation.dto.UpdateCompilationRequestDto;
 import ru.practicum.ewm.main.server.compilation.service.AdminCompilationService;
 
 import javax.validation.Valid;

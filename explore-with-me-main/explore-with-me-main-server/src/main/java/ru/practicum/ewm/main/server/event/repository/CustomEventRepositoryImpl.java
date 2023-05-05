@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.support.JpaEntityInformation;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import ru.practicum.ewm.main.server.event.dto.EventSort;
 import ru.practicum.ewm.main.server.event.entity.Event;
-import ru.practicum.ewm.main.server.event.state.EventState;
+import ru.practicum.ewm.main.server.event.entity.state.EventState;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;

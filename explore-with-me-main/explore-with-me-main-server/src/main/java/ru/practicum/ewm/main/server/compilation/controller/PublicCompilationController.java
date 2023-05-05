@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.main.server.compilation.dto.CompilationDto;
-import ru.practicum.ewm.main.server.compilation.service.CompilationService;
+import ru.practicum.ewm.main.server.compilation.service.PublicCompilationService;
 
 import java.util.List;
 
@@ -15,7 +15,7 @@ import static org.springframework.http.HttpStatus.OK;
 @RequestMapping("/compilations")
 @RequiredArgsConstructor
 public class PublicCompilationController {
-    private final CompilationService compilationService;
+    private final PublicCompilationService compilationService;
 
     @ResponseStatus(OK)
     @GetMapping("/{compId}")

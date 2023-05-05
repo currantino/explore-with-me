@@ -5,10 +5,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.ewm.main.server.category.dto.create.CreateCategoryRequestDto;
-import ru.practicum.ewm.main.server.category.dto.create.CreateCategoryResponseDto;
-import ru.practicum.ewm.main.server.category.dto.patch.PatchCategoryRequestDto;
-import ru.practicum.ewm.main.server.category.dto.patch.PatchCategoryResponseDto;
+import ru.practicum.ewm.main.server.category.dto.CreateCategoryRequestDto;
+import ru.practicum.ewm.main.server.category.dto.CreateCategoryResponseDto;
+import ru.practicum.ewm.main.server.category.dto.PatchCategoryRequestDto;
+import ru.practicum.ewm.main.server.category.dto.PatchCategoryResponseDto;
 import ru.practicum.ewm.main.server.category.service.CategoryService;
 
 import javax.validation.Valid;

@@ -2,14 +2,14 @@ package ru.practicum.ewm.main.server.event.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.practicum.ewm.main.server.event.dto.AdminStateAction;
 import ru.practicum.ewm.main.server.event.dto.EventFullDto;
 import ru.practicum.ewm.main.server.event.dto.UpdateEventAdminRequestDto;
-import ru.practicum.ewm.main.server.event.dto.mapper.AdminEventMapper;
-import ru.practicum.ewm.main.server.event.dto.mapper.EventMapper;
+import ru.practicum.ewm.main.server.event.dto.stateaction.AdminEventStateAction;
 import ru.practicum.ewm.main.server.event.entity.Event;
+import ru.practicum.ewm.main.server.event.entity.state.EventState;
+import ru.practicum.ewm.main.server.event.mapper.AdminEventMapper;
+import ru.practicum.ewm.main.server.event.mapper.EventMapper;
 import ru.practicum.ewm.main.server.event.repository.EventRepository;
-import ru.practicum.ewm.main.server.event.state.EventState;
 import ru.practicum.ewm.main.server.exception.EventNotFoundException;
 import ru.practicum.ewm.main.server.exception.InvalidStateActionException;
 
@@ -56,7 +56,7 @@ public class AdminEventService {
     }
 
     private void applyStateAction(
-            AdminStateAction stateAction,
+            AdminEventStateAction stateAction,
             Event event
     ) {
         switch (stateAction) {

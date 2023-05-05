@@ -5,8 +5,8 @@ import org.springframework.stereotype.Service;
 import ru.practicum.ewm.main.server.event.dto.EventFullDto;
 import ru.practicum.ewm.main.server.event.dto.EventShortDto;
 import ru.practicum.ewm.main.server.event.dto.EventSort;
-import ru.practicum.ewm.main.server.event.dto.mapper.EventMapper;
 import ru.practicum.ewm.main.server.event.entity.Event;
+import ru.practicum.ewm.main.server.event.mapper.EventMapper;
 import ru.practicum.ewm.main.server.event.repository.EventRepository;
 import ru.practicum.ewm.main.server.exception.EventNotFoundException;
 

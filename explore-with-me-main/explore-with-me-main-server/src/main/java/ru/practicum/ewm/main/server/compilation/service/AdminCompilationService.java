@@ -2,12 +2,12 @@ package ru.practicum.ewm.main.server.compilation.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.practicum.ewm.main.server.compilation.controller.UpdateCompilationRequestDto;
 import ru.practicum.ewm.main.server.compilation.dto.CompilationDto;
 import ru.practicum.ewm.main.server.compilation.dto.NewCompilationDto;
-import ru.practicum.ewm.main.server.compilation.dto.mapper.CompilationMapper;
-import ru.practicum.ewm.main.server.compilation.dto.mapper.UpdateCompilationMapper;
+import ru.practicum.ewm.main.server.compilation.dto.UpdateCompilationRequestDto;
 import ru.practicum.ewm.main.server.compilation.entity.Compilation;
+import ru.practicum.ewm.main.server.compilation.mapper.CompilationMapper;
+import ru.practicum.ewm.main.server.compilation.mapper.UpdateCompilationMapper;
 import ru.practicum.ewm.main.server.compilation.repository.CompilationRepository;
 import ru.practicum.ewm.main.server.exception.CompilationNotFoundException;
 

@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.NoRepositoryBean;
 import ru.practicum.ewm.main.server.event.dto.EventSort;
 import ru.practicum.ewm.main.server.event.entity.Event;
-import ru.practicum.ewm.main.server.event.state.EventState;
+import ru.practicum.ewm.main.server.event.entity.state.EventState;
 
 import java.time.LocalDateTime;
 import java.util.List;

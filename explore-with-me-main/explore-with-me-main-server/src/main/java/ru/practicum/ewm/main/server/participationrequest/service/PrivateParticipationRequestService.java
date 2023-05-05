@@ -34,10 +34,7 @@ public class PrivateParticipationRequestService {
                 .orElseThrow(() -> new UserNotFoundException("Could not find the requested user."));
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new EventNotFoundException("Could not find the requested event."));
-        if (!Objects.equals(event.getParticipantLimit(), 0)
-                && Objects.equals(event.getParticipantLimit(), event.getConfirmedRequests())) {
-            throw new ParticipantLimitReachedException("Reached participant limit of the event.");
-        }
+        checkIfParticipantLimitWasReached(event);
         checkIfRequesterIsNotInitiatorOfEvent(userId, event);
         checkIfEventIsPublished(event);
         ParticipationRequestStatus status;
@@ -56,6 +53,13 @@ public class PrivateParticipationRequestService {
                 .build();
         ParticipationRequest saved = participationRequestRepository.save(request);
         return participationRequestMapper.toDto(saved);
+    }
+
+    private void checkIfParticipantLimitWasReached(Event event) {
+        if (!Objects.equals(event.getParticipantLimit(), 0)
+                && Objects.equals(event.getParticipantLimit(), event.getConfirmedRequests())) {
+            throw new ParticipantLimitReachedException("Reached participant limit of the event.");
+        }
     }
 
     public List<ParticipationRequestDto> getParticipationRequestsByParticipatorId(Long userId) {

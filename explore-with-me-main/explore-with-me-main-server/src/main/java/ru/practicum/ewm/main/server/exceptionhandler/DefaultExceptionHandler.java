@@ -71,9 +71,10 @@ public class DefaultExceptionHandler {
         return ResponseEntity
                 .status(BAD_REQUEST)
                 .body(ApiError.builder()
-                        .reason("Unexpected error occured!")
+                        .reason("Unexpected error occurred!")
                         .message(e.getMessage())
                         .timestamp(now())
+                        .status(BAD_REQUEST)
                         .build());
     }
 }

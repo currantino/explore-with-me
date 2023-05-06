@@ -4,14 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.ewm.main.server.event.dto.EventFullDto;
 import ru.practicum.ewm.main.server.event.dto.EventShortDto;
-import ru.practicum.ewm.main.server.event.dto.EventSort;
+import ru.practicum.ewm.main.server.event.dto.filter.EventFilterQuery;
 import ru.practicum.ewm.main.server.event.entity.Event;
 import ru.practicum.ewm.main.server.event.mapper.EventMapper;
 import ru.practicum.ewm.main.server.event.repository.EventRepository;
 import ru.practicum.ewm.main.server.exception.EventNotFoundException;
 
 import javax.transaction.Transactional;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
@@ -23,28 +22,8 @@ public class PublicEventService {
     private final EventMapper eventMapper;
 
     @Transactional
-    public List<EventShortDto> getEventsFiltered(
-            String searchQuery,
-            List<Long> categoryIds,
-            Boolean paid,
-            LocalDateTime rangeStart,
-            LocalDateTime rangeEnd,
-            Boolean onlyAvailable,
-            EventSort sort,
-            Integer from,
-            Integer size
-    ) {
-        List<Event> filtered = eventRepository.getEventsForPublic(
-                searchQuery,
-                categoryIds,
-                paid,
-                rangeStart,
-                rangeEnd,
-                onlyAvailable,
-                sort,
-                from,
-                size
-        );
+    public List<EventShortDto> getEventsFiltered(EventFilterQuery query) {
+        List<Event> filtered = eventRepository.getEventsForPublic(query);
 
         List<Long> viewedEventsIds = filtered.stream()
                 .map(Event::getId)

@@ -4,6 +4,8 @@ package ru.practicum.ewm.main.server.event.repository;
 import org.springframework.data.jpa.repository.support.JpaEntityInformation;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import ru.practicum.ewm.main.server.event.dto.EventSort;
+import ru.practicum.ewm.main.server.event.dto.filter.AdminEventFilterQuery;
+import ru.practicum.ewm.main.server.event.dto.filter.EventFilterQuery;
 import ru.practicum.ewm.main.server.event.entity.Event;
 import ru.practicum.ewm.main.server.event.entity.state.EventState;
 
@@ -29,38 +31,34 @@ public class CustomEventRepositoryImpl extends SimpleJpaRepository<Event, Long> 
         this.entityManager = entityManager;
     }
 
-    public List<Event> getEventsForAdmin(
-            List<Long> users,
-            List<EventState> states,
-            List<Long> categories,
-            LocalDateTime rangeStart,
-            LocalDateTime rangeEnd,
-            Integer from,
-            Integer size
-    ) {
+    public List<Event> getEventsForAdmin(AdminEventFilterQuery filterQuery) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Event> criteriaQuery = cb.createQuery(Event.class);
         Root<Event> root = criteriaQuery.from(Event.class);
         List<Predicate> predicates = new ArrayList<>();
 
-        if (users != null && !users.isEmpty()) {
+        List<Long> userIds = filterQuery.getUserIds();
+        if (userIds != null && !userIds.isEmpty()) {
             predicates.add(
-                    root.get("initiator").in(users)
+                    root.get("initiator").in(userIds)
             );
         }
 
+        List<EventState> states = filterQuery.getStates();
         if (states != null && !states.isEmpty()) {
             predicates.add(
                     root.get("state").in(states)
             );
         }
 
-        if (categories != null && !categories.isEmpty()) {
+        List<Long> categoryIds = filterQuery.getCategoryIds();
+        if (categoryIds != null && !categoryIds.isEmpty()) {
             predicates.add(
-                    root.get("category").in(categories)
+                    root.get("category").in(categoryIds)
             );
         }
 
+        LocalDateTime rangeStart = filterQuery.getRangeStart();
         if (rangeStart != null) {
             predicates.add(
                     cb.greaterThanOrEqualTo(
@@ -71,6 +69,7 @@ public class CustomEventRepositoryImpl extends SimpleJpaRepository<Event, Long> 
 
         }
 
+        LocalDateTime rangeEnd = filterQuery.getRangeEnd();
         if (rangeEnd != null) {
             predicates.add(
                     cb.lessThanOrEqualTo(
@@ -82,23 +81,13 @@ public class CustomEventRepositoryImpl extends SimpleJpaRepository<Event, Long> 
 
         criteriaQuery.where(predicates.toArray(Predicate[]::new));
         TypedQuery<Event> query = entityManager.createQuery(criteriaQuery)
-                .setFirstResult(from)
-                .setMaxResults(size);
+                .setFirstResult(filterQuery.getFrom())
+                .setMaxResults(filterQuery.getSize());
         return query.getResultList();
     }
 
     @Override
-    public List<Event> getEventsForPublic(
-            String searchQuery,
-            List<Long> categoryIds,
-            Boolean paid,
-            LocalDateTime rangeStart,
-            LocalDateTime rangeEnd,
-            Boolean onlyAvailable,
-            EventSort sort,
-            Integer from,
-            Integer size
-    ) {
+    public List<Event> getEventsForPublic(EventFilterQuery filteredQuery) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Event> criteriaQuery = cb.createQuery(Event.class);
         Root<Event> root = criteriaQuery.from(Event.class);
@@ -110,6 +99,7 @@ public class CustomEventRepositoryImpl extends SimpleJpaRepository<Event, Long> 
 
         predicates.add(onlyPublished);
 
+        String searchQuery = filteredQuery.getSearchQuery();
         if (searchQuery != null && !searchQuery.isBlank()) {
             String searchQueryLowerCase = searchQuery.toLowerCase();
 
@@ -129,12 +119,14 @@ public class CustomEventRepositoryImpl extends SimpleJpaRepository<Event, Long> 
             );
         }
 
+        List<Long> categoryIds = filteredQuery.getCategoryIds();
         if (categoryIds != null && !categoryIds.isEmpty()) {
             predicates.add(
                     root.get("category").in(categoryIds)
             );
         }
 
+        Boolean paid = filteredQuery.getPaid();
         if (paid != null) {
             predicates.add(
                     cb.equal(
@@ -144,7 +136,8 @@ public class CustomEventRepositoryImpl extends SimpleJpaRepository<Event, Long> 
             );
         }
 
-        if (onlyAvailable) {
+        Boolean onlyAvailable = filteredQuery.getOnlyAvailable();
+        if (onlyAvailable != null && onlyAvailable) {
             Predicate withParticipationLimit = cb.lessThan(
                     root.get("confirmedRequests"),
                     root.get("participationLimit")
@@ -161,6 +154,8 @@ public class CustomEventRepositoryImpl extends SimpleJpaRepository<Event, Long> 
             );
         }
 
+        LocalDateTime rangeStart = filteredQuery.getRangeStart();
+        LocalDateTime rangeEnd = filteredQuery.getRangeEnd();
         if (rangeStart == null || rangeEnd == null) {
             predicates.add(
                     cb.greaterThanOrEqualTo(
@@ -169,7 +164,6 @@ public class CustomEventRepositoryImpl extends SimpleJpaRepository<Event, Long> 
                     )
             );
         }
-
         if (rangeStart != null) {
             predicates.add(
                     cb.greaterThanOrEqualTo(
@@ -190,7 +184,7 @@ public class CustomEventRepositoryImpl extends SimpleJpaRepository<Event, Long> 
 
 
         Order sortingOrder;
-
+        EventSort sort = filteredQuery.getSort();
         switch (sort) {
             case EVENT_DATE:
                 sortingOrder = cb.asc(root.get("eventDate"));
@@ -207,8 +201,8 @@ public class CustomEventRepositoryImpl extends SimpleJpaRepository<Event, Long> 
                 .orderBy(sortingOrder);
 
         TypedQuery<Event> query = entityManager.createQuery(criteriaQuery)
-                .setFirstResult(from)
-                .setMaxResults(size);
+                .setFirstResult(filteredQuery.getFrom())
+                .setMaxResults(filteredQuery.getSize());
         return query.getResultList();
     }
 

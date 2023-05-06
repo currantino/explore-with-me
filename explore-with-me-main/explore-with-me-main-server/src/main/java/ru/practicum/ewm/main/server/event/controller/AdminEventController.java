@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.main.server.event.dto.EventFullDto;
 import ru.practicum.ewm.main.server.event.dto.UpdateEventAdminRequestDto;
+import ru.practicum.ewm.main.server.event.dto.filter.AdminEventFilterQuery;
 import ru.practicum.ewm.main.server.event.entity.state.EventState;
 import ru.practicum.ewm.main.server.event.service.AdminEventService;
 
@@ -58,14 +59,16 @@ public class AdminEventController {
             )
             Integer size
     ) {
-        return adminEventService.getEvents(
-                userIds,
-                states,
-                categoryIds,
-                rangeStart,
-                rangeEnd,
-                from,
-                size);
+        AdminEventFilterQuery filterQuery = AdminEventFilterQuery.builder()
+                .userIds(userIds)
+                .states(states)
+                .categoryIds(categoryIds)
+                .rangeStart(rangeStart)
+                .from(from)
+                .size(size)
+                .rangeEnd(rangeEnd)
+                .build();
+        return adminEventService.getEvents(filterQuery);
     }
 
     @PatchMapping("/{eventId}")

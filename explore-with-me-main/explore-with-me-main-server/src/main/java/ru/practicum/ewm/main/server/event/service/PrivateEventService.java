@@ -172,6 +172,8 @@ public class PrivateEventService {
                             rejectRequest(newStatus, rejectedRequests, request);
                             break;
                         }
+                        default:
+                            throw new InvalidStatusException("Unknown event status!");
                     }
                 }
         );
@@ -207,6 +209,8 @@ public class PrivateEventService {
             }
             case SEND_TO_REVIEW:
                 event.setState(EventState.PENDING);
+            default:
+                throw new InvalidStateActionException("Unknown state action!");
         }
     }
 

@@ -6,6 +6,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import ru.practicum.ewm.main.server.exception.BadRequestException;
 import ru.practicum.ewm.main.server.exception.ConflictException;
 import ru.practicum.ewm.main.server.exception.DataNotFoundException;
 
@@ -14,7 +15,7 @@ import static org.springframework.http.HttpStatus.*;
 
 @ControllerAdvice(basePackages = "ru.practicum.ewm.main.server")
 public class DefaultExceptionHandler {
-    @ExceptionHandler()
+    @ExceptionHandler
     @ResponseStatus(NOT_FOUND)
     public ResponseEntity<ApiError> handleDataNotFoundException(final DataNotFoundException e) {
         return ResponseEntity
@@ -27,7 +28,7 @@ public class DefaultExceptionHandler {
                         .build());
     }
 
-    @ExceptionHandler()
+    @ExceptionHandler
     @ResponseStatus(BAD_REQUEST)
     public ResponseEntity<ApiError> handleDataNotFoundException(final MethodArgumentNotValidException e) {
         return ResponseEntity.badRequest()
@@ -39,7 +40,7 @@ public class DefaultExceptionHandler {
                         .build());
     }
 
-    @ExceptionHandler()
+    @ExceptionHandler
     @ResponseStatus(CONFLICT)
     public ResponseEntity<ApiError> handleDataIntegrityViolationException(final DataIntegrityViolationException e) {
         return ResponseEntity
@@ -52,7 +53,7 @@ public class DefaultExceptionHandler {
                         .build());
     }
 
-    @ExceptionHandler()
+    @ExceptionHandler
     @ResponseStatus(CONFLICT)
     public ResponseEntity<ApiError> handleConflictException(final ConflictException e) {
         return ResponseEntity
@@ -65,16 +66,29 @@ public class DefaultExceptionHandler {
                         .build());
     }
 
-    @ExceptionHandler()
+    @ExceptionHandler
     @ResponseStatus(BAD_REQUEST)
-    public ResponseEntity<ApiError> handleRuntimeException(final RuntimeException e) {
+    public ResponseEntity<ApiError> handleBadRequestException(final BadRequestException e) {
         return ResponseEntity
                 .status(BAD_REQUEST)
+                .body(ApiError.builder()
+                        .reason("Invalid request.")
+                        .message(e.getMessage())
+                        .timestamp(now())
+                        .status(BAD_REQUEST)
+                        .build());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(INTERNAL_SERVER_ERROR)
+    public ResponseEntity<ApiError> handleRuntimeException(final RuntimeException e) {
+        return ResponseEntity
+                .status(INTERNAL_SERVER_ERROR)
                 .body(ApiError.builder()
                         .reason("Unexpected error occurred!")
                         .message(e.getMessage())
                         .timestamp(now())
-                        .status(BAD_REQUEST)
+                        .status(INTERNAL_SERVER_ERROR)
                         .build());
     }
 }

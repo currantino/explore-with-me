@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.main.server.event.dto.EventFullDto;
 import ru.practicum.ewm.main.server.event.dto.EventShortDto;
 import ru.practicum.ewm.main.server.event.dto.EventSort;
+import ru.practicum.ewm.main.server.event.dto.filter.EventFilterQuery;
 import ru.practicum.ewm.main.server.event.service.PublicEventService;
 import ru.practicum.ewm.stats.client.endpointhit.EndPointHitClient;
 
@@ -84,16 +85,17 @@ public class PublicEventController {
             HttpServletRequest request
     ) {
         endPointHitClient.createEndPointHit(request);
-        return eventService.getEventsFiltered(
-                searchQuery,
-                categoryIds,
-                paid,
-                rangeStart,
-                rangeEnd,
-                onlyAvailable,
-                sort,
-                from,
-                size
-        );
+        EventFilterQuery query = EventFilterQuery.builder()
+                .searchQuery(searchQuery)
+                .categoryIds(categoryIds)
+                .paid(paid)
+                .rangeStart(rangeStart)
+                .rangeEnd(rangeEnd)
+                .onlyAvailable(onlyAvailable)
+                .sort(sort)
+                .from(from)
+                .size(size)
+                .build();
+        return eventService.getEventsFiltered(query);
     }
 }

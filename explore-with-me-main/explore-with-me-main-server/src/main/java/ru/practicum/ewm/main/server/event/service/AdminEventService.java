@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.ewm.main.server.event.dto.EventFullDto;
 import ru.practicum.ewm.main.server.event.dto.UpdateEventAdminRequestDto;
+import ru.practicum.ewm.main.server.event.dto.filter.AdminEventFilterQuery;
 import ru.practicum.ewm.main.server.event.dto.stateaction.AdminEventStateAction;
 import ru.practicum.ewm.main.server.event.entity.Event;
 import ru.practicum.ewm.main.server.event.entity.state.EventState;
@@ -13,7 +14,6 @@ import ru.practicum.ewm.main.server.event.repository.EventRepository;
 import ru.practicum.ewm.main.server.exception.EventNotFoundException;
 import ru.practicum.ewm.main.server.exception.InvalidStateActionException;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static java.time.LocalDateTime.now;
@@ -27,16 +27,9 @@ public class AdminEventService {
     private final EventMapper eventMapper;
 
 
-    public List<EventFullDto> getEvents(List<Long> userIds, List<EventState> states, List<Long> categoryIds, LocalDateTime rangeStart, LocalDateTime rangeEnd, Integer from, Integer size) {
-        return eventRepository.getEventsForAdmin(
-                        userIds,
-                        states,
-                        categoryIds,
-                        rangeStart,
-                        rangeEnd,
-                        from,
-                        size
-                ).stream()
+    public List<EventFullDto> getEvents(AdminEventFilterQuery filterQuery) {
+        return eventRepository
+                .getEventsForAdmin(filterQuery).stream()
                 .map(adminEventMapper::toDto)
                 .collect(toList());
     }
@@ -73,6 +66,8 @@ public class AdminEventService {
                     throw new InvalidStateActionException("You cannot reject event if it is already published.");
                 }
                 event.setState(EventState.REJECTED);
+            default:
+                throw new InvalidStateActionException("Unknown state action!");
         }
     }
 }

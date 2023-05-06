@@ -90,7 +90,7 @@ public class PrivateParticipationRequestService {
     }
 
     private void checkIfEventIsPublished(Event event) {
-        if (event.getState() != EventState.PUBLISHED) {
+        if (!EventState.PUBLISHED.equals(event.getState())) {
             throw new EventNotPublishedException("You cannot request participation in event that is not published.");
         }
     }

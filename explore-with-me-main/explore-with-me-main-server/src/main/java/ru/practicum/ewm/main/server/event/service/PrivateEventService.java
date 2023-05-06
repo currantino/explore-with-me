@@ -166,14 +166,15 @@ public class PrivateEventService {
                     switch (newStatus) {
                         case CONFIRMED: {
                             confirmRequest(event, newStatus, confirmedRequests, request);
-                            break;
+                            return;
                         }
                         case REJECTED: {
                             rejectRequest(newStatus, rejectedRequests, request);
-                            break;
+                            return;
                         }
-                        default:
+                        default: {
                             throw new InvalidStatusException("Unknown event status!");
+                        }
                     }
                 }
         );
@@ -207,10 +208,13 @@ public class PrivateEventService {
                 event.setState(EventState.CANCELED);
                 return;
             }
-            case SEND_TO_REVIEW:
+            case SEND_TO_REVIEW: {
                 event.setState(EventState.PENDING);
-            default:
+                return;
+            }
+            default: {
                 throw new InvalidStateActionException("Unknown state action!");
+            }
         }
     }
 

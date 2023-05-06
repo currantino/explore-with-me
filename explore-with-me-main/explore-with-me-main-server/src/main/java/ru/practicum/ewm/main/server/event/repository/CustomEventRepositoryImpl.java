@@ -186,14 +186,17 @@ public class CustomEventRepositoryImpl extends SimpleJpaRepository<Event, Long> 
         Order sortingOrder;
         EventSort sort = filteredQuery.getSort();
         switch (sort) {
-            case EVENT_DATE:
+            case EVENT_DATE: {
                 sortingOrder = cb.asc(root.get("eventDate"));
                 break;
-            case VIEWS:
+            }
+            case VIEWS: {
                 sortingOrder = cb.desc(root.get("views"));
                 break;
-            default:
+            }
+            default: {
                 sortingOrder = cb.desc(root.get("views"));
+            }
         }
 
         criteriaQuery

@@ -61,13 +61,16 @@ public class AdminEventService {
                 event.setPublishedOn(now());
                 return;
             }
-            case REJECT_EVENT:
+            case REJECT_EVENT: {
                 if (!EventState.PENDING.equals(event.getState())) {
                     throw new InvalidStateActionException("You cannot reject event if it is already published.");
                 }
                 event.setState(EventState.REJECTED);
-            default:
+                return;
+            }
+            default: {
                 throw new InvalidStateActionException("Unknown state action!");
+            }
         }
     }
 }

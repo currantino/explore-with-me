@@ -3,7 +3,7 @@ services:
 
   main-server:
     container_name: main-server-container
-    build: explore-with-me-main/explore-with-me-main-server
+    build: explore-with-me-main
     depends_on:
       - main-db
       - stats-server

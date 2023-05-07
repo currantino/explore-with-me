@@ -1,0 +1,17 @@
+spring:
+  mvc:
+    format:
+      date: "yyyy-MM-dd"
+      time: "HH:mm:ss"
+      date-time: "yyyy-MM-dd HH:mm:ss"
+  sql:
+    init:
+      mode: always
+  datasource:
+    username: kitty
+    password: kitty
+    url: jdbc:postgresql://localhost:5432/explore-with-me-main
+    driver-class-name: org.postgresql.Driver
+
+stats-server:
+  url: ${STATS_SERVER_URL}

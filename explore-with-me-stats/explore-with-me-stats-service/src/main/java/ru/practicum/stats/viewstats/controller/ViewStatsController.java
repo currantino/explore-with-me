@@ -1,6 +1,5 @@
 package ru.practicum.stats.viewstats.controller;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,15 +18,12 @@ import java.util.List;
 @RequestMapping("/stats")
 public class ViewStatsController {
     private final ViewStatsService viewStatsService;
-    private static final String DATETIME_FORMAT_PATTERN = "yyyy-MM-dd HH:mm:ss";
 
     @GetMapping
     public List<ViewStats> viewStats(
             @RequestParam(name = "start")
-            @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATETIME_FORMAT_PATTERN)
             LocalDateTime start,
             @RequestParam(name = "end")
-            @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATETIME_FORMAT_PATTERN)
             LocalDateTime end,
             @RequestParam(name = "uris",
                     defaultValue = Strings.EMPTY)

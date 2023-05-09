@@ -2,12 +2,14 @@ package ru.practicum.ewm.main.server.event.entity;
 
 import lombok.*;
 import ru.practicum.ewm.main.server.category.entity.Category;
+import ru.practicum.ewm.main.server.comment.entity.Comment;
 import ru.practicum.ewm.main.server.event.entity.state.EventState;
 import ru.practicum.ewm.main.server.location.entity.Location;
 import ru.practicum.ewm.main.server.user.entity.User;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "event")
@@ -65,4 +67,6 @@ public class Event {
     private String title;
     @Column(name = "views")
     private Long views = 0L;
+    @OneToMany
+    private List<Comment> comments;
 }

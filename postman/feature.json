@@ -1002,8 +1002,8 @@
 									"    () => {",
 									"        pm.expect(target.id).to.not.be.null;",
 									"        pm.expect(target.text).equal(source.text, 'Текст комментария должен соответствовать тексту комментария в запросе');",
-									"        pm.expect(target.eventId).equal(pm.collectionVariables.get('eventId'));",
-									"        pm.expect(target.author.id).equal(pm.collectionVariables.get('commenterId'));",
+									"        pm.expect(target.eventId).equal(parseInt(pm.collectionVariables.get('eventId')));",
+									"        pm.expect(target.author.id).equal(parseInt(pm.collectionVariables.get('commenterId')));",
 									"        pm.expect(target.state).equal('PENDING');",
 									"    }",
 									");"
@@ -1354,6 +1354,154 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "Comments integration with events",
+			"item": [
+				{
+					"name": "Get event by id with only accepted comments",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const main = async () => {",
+									"    const api = new API(pm);",
+									"    const rnd = new RandomUtils();",
+									"",
+									"    try {",
+									"        const user = await api.addUser(rnd.getUser());",
+									"        const category = await api.addCategory(rnd.getCategory());",
+									"        let event = await api.addEvent(user.id, rnd.getEvent(category.id));",
+									"        event = await api.publishEvent(event.id);",
+									"        const commenter = await api.addUser(rnd.getUser())",
+									"        const pendingComment1 = await api.addComment(rnd.getComment(), commenter.id, event.id);",
+									"        let acceptedComment = await api.addComment(rnd.getComment(), commenter.id, event.id);",
+									"        acceptedComment = await api.acceptComment(acceptedComment);",
+									"        pm.collectionVariables.set('eventId', event.id);",
+									"        pm.collectionVariables.set('response', event);",
+									"",
+									"    } catch(err) {",
+									"        console.error(\"Ошибка при подготовке тестовых данных.\", err);",
+									"    }",
+									"};",
+									"",
+									"const interval = setInterval(() => {}, 1000);",
+									"",
+									"setTimeout(async () => ",
+									"    {",
+									"        try {",
+									"            // выполняем наш скрипт",
+									"            await main();",
+									"        } catch (e) {",
+									"            console.error(e);",
+									"        } finally {",
+									"            clearInterval(interval);",
+									"        }",
+									"    },  ",
+									"    100 ",
+									");"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(",
+									"    \"Ответ должен содержать код статуса 200 и данные в формате json\", ",
+									"    () => {",
+									"        pm.response.to.have.status(200);  ",
+									"        pm.response.to.be.withBody;",
+									"        pm.response.to.be.json;",
+									"    }",
+									");",
+									"",
+									"const source = pm.collectionVariables.get('response');",
+									"const target = pm.response.json();",
+									"",
+									"",
+									"pm.test(",
+									"        \"Событие должно содержать поля: id, title, annotation, category, paid, eventDate, initiator, views, confirmedRequests, description, participantLimit, state, createdOn, publishedOn, location, requestModeration, comments\",",
+									"        () => {",
+									"                pm.expect(target).to.have.property('id');",
+									"                pm.expect(target).to.have.property('title');",
+									"                pm.expect(target).to.have.property('annotation');",
+									"                pm.expect(target).to.have.property('category');",
+									"                pm.expect(target).to.have.property('paid');",
+									"                pm.expect(target).to.have.property('eventDate');",
+									"                pm.expect(target).to.have.property('initiator');",
+									"                pm.expect(target).to.have.property('views');",
+									"                pm.expect(target).to.have.property('confirmedRequests');",
+									"                pm.expect(target).to.have.property('description');",
+									"                pm.expect(target).to.have.property('participantLimit');",
+									"                pm.expect(target).to.have.property('state');",
+									"                pm.expect(target).to.have.property('createdOn');",
+									"                pm.expect(target).to.have.property('publishedOn');",
+									"                pm.expect(target).to.have.property('location');",
+									"                pm.expect(target).to.have.property('requestModeration');",
+									"                pm.expect(target).to.have.property('comments');",
+									"        }",
+									");",
+									"",
+									"const comments = target.comments;",
+									"",
+									"pm.test(",
+									"        \"Событие должно содержать список комментариев с полями:  id, text, eventId, author, createdOn, state\", ",
+									"        () => {",
+									"                console.log(comments);",
+									"                pm.expect(comments).to.be.an(\"array\");",
+									"                comments.forEach(comment => {",
+									"                        pm.expect(comment).to.have.keys('id','text','eventId', 'author', 'createdOn', 'state').and.be.an(\"object\")",
+									"                });",
+									"        }",
+									");",
+									"",
+									"",
+									"pm.test(",
+									"        \"Данные в ответе должны соответствовать данным в запросе\",",
+									"        () => {",
+									"    pm.expect(source.annotation).equal(target.annotation, 'Аннотация события должна соответствовать аннотации события с указанным идентификатором');",
+									"    pm.expect(source.category.id).equal(target.category.id, 'Категория события должна соответствовать категории события с указанным идентификатором');",
+									"    pm.expect(source.paid.toString()).equal(target.paid.toString(), 'Стоимость события должна соответствовать стоимости события с указанным идентификатором');",
+									"    pm.expect(source.eventDate).equal(target.eventDate, 'Дата проведения события должна соответствовать дате проведения события с указанным идентификатором');",
+									"    pm.expect(source.description).equal(target.description, 'Описание события должно соответствовать описанию события с указанным идентификатором');",
+									"    pm.expect(source.title).equal(target.title, 'Название события должно соответствовать названию события с указанным идентификатором');",
+									"    pm.expect(source.participantLimit.toString()).equal(target.participantLimit.toString(), 'Лимит участников события должен соответствовать лимиту участников события с указанным идентификатором');",
+									"        pm.expect(target.comments.length).equal(1);",
+									"        pm.expect(target.comments[0].state).equal('ACCEPTED');",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/events/:eventId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"events",
+								":eventId"
+							],
+							"variable": [
+								{
+									"key": "eventId",
+									"value": "{{eventId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	],
 	"event": [
@@ -1580,6 +1728,10 @@
 		},
 		{
 			"key": "pendingComments",
+			"value": ""
+		},
+		{
+			"key": "response",
 			"value": ""
 		}
 	]

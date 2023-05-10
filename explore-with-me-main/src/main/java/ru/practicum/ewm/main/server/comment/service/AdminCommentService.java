@@ -24,7 +24,7 @@ public class AdminCommentService {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new CommentNotFoundException("Could not find the requested comment."));
         if (!CommentState.PENDING.equals(comment.getState())) {
-            throw new InvalidStateActionException("You cannot change state of a comment if it is not PENDING");
+            throw new InvalidStateActionException("You cannot change state of a comment if it is not PENDING.");
         }
         comment.setState(state);
         Comment saved = commentRepository.save(comment);

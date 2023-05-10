@@ -7,7 +7,6 @@ import org.springframework.stereotype.Repository;
 import ru.practicum.ewm.main.server.comment.entity.Comment;
 import ru.practicum.ewm.main.server.comment.entity.state.CommentState;
 
-import java.util.Collection;
 import java.util.List;
 
 @Repository

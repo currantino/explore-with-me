@@ -31,6 +31,7 @@ public class AdminCommentService {
         return commentMapper.toDto(saved);
     }
 
+    @Transactional
     public void deleteCommentById(Long commentId) {
         int deleted = commentRepository.deleteByIdAndGetNumberOfDeletedRows(commentId);
         if (deleted == 0) {

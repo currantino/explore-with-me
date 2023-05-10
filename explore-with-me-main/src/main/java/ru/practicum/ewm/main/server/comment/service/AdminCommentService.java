@@ -11,6 +11,9 @@ import ru.practicum.ewm.main.server.exception.CommentNotFoundException;
 import ru.practicum.ewm.main.server.exception.InvalidStateActionException;
 
 import javax.transaction.Transactional;
+import java.util.List;
+
+import static java.util.stream.Collectors.toList;
 
 @Service
 @RequiredArgsConstructor
@@ -37,5 +40,19 @@ public class AdminCommentService {
         if (deleted == 0) {
             throw new CommentNotFoundException("Could not find comment for deletion.");
         }
+    }
+
+    public CommentDto getCommentById(Long commentId) {
+        return commentRepository
+                .findById(commentId)
+                .map(commentMapper::toDto)
+                .orElseThrow(() -> new CommentNotFoundException("Could not find the requested comment."));
+    }
+
+    public List<CommentDto> getPendingComments() {
+        return commentRepository
+                .findAllByState(CommentState.PENDING).stream()
+                .map(commentMapper::toDto)
+                .collect(toList());
     }
 }

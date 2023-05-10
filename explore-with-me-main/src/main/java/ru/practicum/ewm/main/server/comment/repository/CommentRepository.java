@@ -5,6 +5,10 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import ru.practicum.ewm.main.server.comment.entity.Comment;
+import ru.practicum.ewm.main.server.comment.entity.state.CommentState;
+
+import java.util.Collection;
+import java.util.List;
 
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Long> {
@@ -16,4 +20,14 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
             "WHERE " +
             "   c.id = :commentId")
     int deleteByIdAndGetNumberOfDeletedRows(Long commentId);
+
+    @Query("SELECT " +
+            "   c " +
+            "FROM" +
+            "   Comment c " +
+            "WHERE " +
+            "   c.state = :commentState " +
+            "ORDER BY " +
+            "   c.createdOn ASC")
+    List<Comment> findAllByState(CommentState commentState);
 }

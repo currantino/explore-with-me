@@ -30,7 +30,7 @@ public class PublicEventController {
             HttpServletRequest request
     ) {
         endPointHitClient.createEndPointHit(request);
-        return eventService.getEventById(eventId);
+        return eventService.getEventByIdWithAcceptedComments(eventId);
     }
 
 

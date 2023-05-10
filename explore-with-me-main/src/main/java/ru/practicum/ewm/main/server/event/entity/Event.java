@@ -68,5 +68,6 @@ public class Event {
     @Column(name = "views")
     private Long views = 0L;
     @OneToMany
+    @JoinColumn(name = "comment_event_id")
     private List<Comment> comments;
 }

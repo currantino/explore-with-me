@@ -2,6 +2,8 @@ package ru.practicum.ewm.main.server.event.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.practicum.ewm.main.server.comment.entity.Comment;
+import ru.practicum.ewm.main.server.comment.entity.state.CommentState;
 import ru.practicum.ewm.main.server.event.dto.EventFullDto;
 import ru.practicum.ewm.main.server.event.dto.EventShortDto;
 import ru.practicum.ewm.main.server.event.dto.filter.EventFilterQuery;
@@ -36,10 +38,14 @@ public class PublicEventService {
     }
 
     @Transactional
-    public EventFullDto getEventById(Long eventId) {
+    public EventFullDto getEventByIdWithAcceptedComments(Long eventId) {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new EventNotFoundException("Could not find the requested event."));
-        eventRepository.addViewById(eventId);
+        List<Comment> accepted = event.getComments().stream()
+                .filter(comment -> CommentState.ACCEPTED.equals(comment.getState()))
+                .collect(toList());
+        event.setComments(accepted);
         return eventMapper.toFullDto(event);
     }
+
 }

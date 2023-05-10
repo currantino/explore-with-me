@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import ru.practicum.ewm.main.server.exception.BadRequestException;
 import ru.practicum.ewm.main.server.exception.ConflictException;
 import ru.practicum.ewm.main.server.exception.DataNotFoundException;
+import ru.practicum.ewm.main.server.exception.NotAccessibleException;
 
 import static java.time.LocalDateTime.now;
 import static org.springframework.http.HttpStatus.*;
@@ -89,6 +90,19 @@ public class DefaultExceptionHandler {
                         .message(e.getMessage())
                         .timestamp(now())
                         .status(INTERNAL_SERVER_ERROR)
+                        .build());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(FORBIDDEN)
+    public ResponseEntity<ApiError> handleNotAccessibleException(final NotAccessibleException e) {
+        return ResponseEntity
+                .status(FORBIDDEN)
+                .body(ApiError.builder()
+                        .reason("You do not have access to the requested resource.")
+                        .message(e.getMessage())
+                        .timestamp(now())
+                        .status(FORBIDDEN)
                         .build());
     }
 }

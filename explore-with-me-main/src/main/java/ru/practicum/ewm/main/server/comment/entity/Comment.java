@@ -22,9 +22,11 @@ public class Comment {
     private Long id;
 
     @ManyToOne
+    @JoinColumn(name = "comment_event_id")
     private Event event;
 
     @ManyToOne
+    @JoinColumn(name = "comment_author_id")
     private User author;
 
     @Column(name = "comment_text")
@@ -34,6 +36,7 @@ public class Comment {
     private LocalDateTime createdOn;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "comment_state")
     private CommentState state;
 
 }

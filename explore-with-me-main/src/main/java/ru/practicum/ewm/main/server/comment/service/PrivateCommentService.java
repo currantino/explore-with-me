@@ -10,11 +10,9 @@ import ru.practicum.ewm.main.server.comment.entity.state.CommentState;
 import ru.practicum.ewm.main.server.comment.mapper.CommentMapper;
 import ru.practicum.ewm.main.server.comment.repository.CommentRepository;
 import ru.practicum.ewm.main.server.event.entity.Event;
+import ru.practicum.ewm.main.server.event.entity.state.EventState;
 import ru.practicum.ewm.main.server.event.repository.CustomEventRepository;
-import ru.practicum.ewm.main.server.exception.CommentNotAccessibleException;
-import ru.practicum.ewm.main.server.exception.CommentNotFoundException;
-import ru.practicum.ewm.main.server.exception.EventNotFoundException;
-import ru.practicum.ewm.main.server.exception.UserNotFoundException;
+import ru.practicum.ewm.main.server.exception.*;
 import ru.practicum.ewm.main.server.user.entity.User;
 import ru.practicum.ewm.main.server.user.repository.UserRepository;
 
@@ -42,12 +40,19 @@ public class PrivateCommentService {
                 .orElseThrow(() -> new UserNotFoundException("Could not find comment author."));
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new EventNotFoundException("Could not find commented event."));
+        checkThatEventIsPublished(event);
         comment.setAuthor(author);
         comment.setEvent(event);
         comment.setCreatedOn(now());
         comment.setState(CommentState.PENDING);
         Comment saved = commentRepository.save(comment);
         return commentMapper.toDto(saved);
+    }
+
+    private void checkThatEventIsPublished(Event event) {
+        if (!EventState.PUBLISHED.equals(event.getState())) {
+            throw new EventNotPublishedException("You cannot comment event that is not published yet.");
+        }
     }
 
     @Transactional
@@ -87,5 +92,11 @@ public class PrivateCommentService {
         if (!Objects.equals(commentAuthorId, requesterId)) {
             throw new CommentNotAccessibleException("You cannot delete comments of other users.");
         }
+    }
+
+    public CommentDto getCommentById(Long commentId) {
+        return commentRepository.findById(commentId)
+                .map(commentMapper::toDto)
+                .orElseThrow(() -> new CommentNotFoundException("Could not find the requested comment."));
     }
 }

@@ -11,12 +11,16 @@ import ru.practicum.ewm.main.server.comment.service.PrivateCommentService;
 
 import javax.validation.Valid;
 
+import static org.springframework.http.HttpStatus.CREATED;
+
 @Validated
 @RestController
 @RequiredArgsConstructor
+@RequestMapping
 public class PrivateCommentController {
     private final PrivateCommentService commentService;
 
+    @ResponseStatus(CREATED)
     @PostMapping("/users/{authorId}/events/{eventId}/comments")
     public CommentDto createComment(
             @PathVariable(name = "authorId")
@@ -49,6 +53,14 @@ public class PrivateCommentController {
                 commentId,
                 commentDto
         );
+    }
+
+    @GetMapping("/users/comments/{commentId}")
+    public CommentDto getCommentById(
+            @PathVariable(name = "commentId")
+            Long commentId
+    ) {
+        return commentService.getCommentById(commentId);
     }
 
     @DeleteMapping("/users/{userId}/comments/{commentId}")

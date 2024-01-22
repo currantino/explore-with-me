@@ -1,0 +1,25 @@
+# Event comment
+type Comment {
+    # Comment id
+    id: ID
+    # Commented event
+    event: Event
+    # Comment author
+    author: User
+    # Comment content
+    text: String
+    # Comment creation datetime
+    createdOn: LocalDateTime
+    # Comment state regarding moderation
+    state: CommentState
+}
+
+# Comment states regarding moderation
+enum CommentState {
+    # Comment is waiting for review
+    PENDING,
+    # Comment is accepted after review
+    ACCEPTED,
+    # Comment is rejected after review
+    REJECTED
+}

@@ -1,0 +1,4 @@
+# Scalar for LocalDateTime
+scalar LocalDateTime
+# Scalar for java.lang.Long
+scalar Long

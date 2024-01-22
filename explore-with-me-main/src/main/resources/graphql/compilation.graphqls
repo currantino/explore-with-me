@@ -1,0 +1,25 @@
+# Compilation of events
+type Compilation {
+    # Compilation id
+    id: ID!
+    # Compilation title
+    title: String!
+    # Is compilation pinned on the main page
+    pinned: Boolean
+    # Events of the compilation
+    events: [Event]
+}
+
+extend type Query {
+    # Get compilation by id
+    compilation(id: ID!): Compilation
+}
+
+extend type Mutation {
+    # Create compilation (can be empty), pinned is false by default
+    createCompilation(
+        title: String!
+        pinned: Boolean = false
+        events: [ID]
+    ) : Compilation
+}

@@ -1,0 +1,103 @@
+extend type Query {
+    # Get events with filtering, default page size is 10
+    getEvents(
+        userIds: [ID]
+        states: [EventState]
+        categoryIds: [ID]
+        rangeStart: LocalDateTime
+        rangeEnd: LocalDateTime
+        from: Int = 0
+        size: Int = 10
+    ) : [Event]
+}
+
+extend type Mutation {
+    # Create event
+    createEvent(
+        # Event initiator id
+        userId: ID!
+        eventDto: CreateEventRequestDto!
+    ): Event
+
+    # Patch event
+    patchEvent(
+        eventId: ID!
+        requestDto: UpdateEventAdminRequestDto!
+    ): Event
+}
+
+input CreateEventRequestDto {
+    annotation: String!
+    category: ID!
+    description: String!
+    eventDate: LocalDateTime!
+    location: LocationInput!
+    paid: Boolean = false
+    participantLimit: Int = 0
+    requestModeration: Boolean = false
+    title: String!
+}
+
+input UpdateEventAdminRequestDto {
+    annotation: String
+    categoryId: Long
+    description: String
+    eventDate: LocalDateTime
+    location: LocationInput
+    paid: Boolean
+    participantLimit: Int
+    requestModeration: Boolean
+    title: String
+    stateAction: AdminEventStateAction
+}
+
+enum AdminEventStateAction {
+    PUBLISH_EVENT,
+    REJECT_EVENT
+}
+
+# Event, key application entity
+type Event {
+    # Event id
+    id: ID
+    # Event annotation
+    annotation: String
+    # Event category
+    category: Category
+    # Number of confirmed participation requests
+    confirmedRequests: Int
+    # Event description
+    description: String
+    # Datetime when the event was created
+    createdOn: LocalDateTime
+    # Datetime when the event is held
+    eventDate: LocalDateTime
+    # User, who created the event
+    initiator: User
+    # Event location
+    location: Location
+    # Is the event paid
+    paid: Boolean
+    # Participant limit, 0 participant limit means anyone can participate
+    participantLimit: Int
+    # Event state regarding moderation and publication
+    state: EventState
+    # Event title
+    title: String
+    # Number of views of the event
+    views: Long
+    # List of related comments
+    comments: [Comment]
+}
+
+# Event state regarding moderation and publication
+enum EventState {
+    # Event is published and available to everyone
+    PUBLISHED,
+    # Event is waiting for review
+    PENDING,
+    # Event was canceled by initiator
+    CANCELED,
+    # Event was rejected by admin
+    REJECTED
+}

@@ -1,0 +1,27 @@
+# Event location
+type Location {
+    # Location id
+    id: ID
+    # Location latitude
+    lat: Float
+    # Location longitude
+    lon: Float
+}
+
+# Input for creating locations
+input LocationInput {
+    lat: Float
+    lon: Float
+}
+
+extend type Query {
+    # Get location by id
+    location(id: ID!): Location
+}
+
+extend type Mutation {
+    # Create a new location
+    createLocation(
+        location: LocationInput
+    ): Location
+}

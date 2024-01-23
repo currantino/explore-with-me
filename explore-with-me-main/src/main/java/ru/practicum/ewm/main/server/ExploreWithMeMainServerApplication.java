@@ -7,12 +7,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import ru.practicum.ewm.main.server.event.repository.CustomEventRepositoryImpl;
 
 @SpringBootApplication
-@ComponentScan(
-        basePackageClasses = {
-                ru.practicum.ewm.main.server.ExploreWithMeMainServerApplication.class,
-                ru.practicum.ewm.stats.client.endpointhit.EndPointHitClient.class
-        }
-)
 @EnableJpaRepositories(repositoryBaseClass = CustomEventRepositoryImpl.class)
 public class ExploreWithMeMainServerApplication {
 

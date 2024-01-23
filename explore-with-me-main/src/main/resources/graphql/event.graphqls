@@ -1,14 +1,51 @@
 extend type Query {
     # Get events with filtering, default page size is 10
     getEvents(
-        userIds: [ID]
-        states: [EventState]
-        categoryIds: [ID]
+        # Ids of users who initiated the event
+        userIds: [ID!]
+        # States of events
+        states: [EventState!]
+        # Ids of event categories
+        categoryIds: [ID!]
+        # Search range start by eventDate
         rangeStart: LocalDateTime
+        # Search range end of eventDate
         rangeEnd: LocalDateTime
+        # Start page number starting from 0
+        from: Int = 0
+        # Page size, default is 10
+        size: Int = 10
+    ) : [Event!]
+
+    getEventsPublic(
+        searchQuery : String
+        categoryIds: [ID!]
+        paid : Boolean
+        rangeStart : LocalDateTime
+        rangeEnd : LocalDateTime
+        onlyAvailable : Boolean = false
+        sort : EventSort
+        from : Int = 0
+        size : Int = 10
+    ):[Event]
+    # Get brief info about events created by user
+    getEventsByUserId(
+        userId: ID!
         from: Int = 0
         size: Int = 10
-    ) : [Event]
+    ): [EventShortDto]
+
+    # Get full event info (for initiator)
+    getEventByInitiator(
+        userId: ID!
+        eventId: ID!
+    ):Event
+
+}
+
+enum EventSort {
+    EVENT_DATE
+    VIEWS
 }
 
 extend type Mutation {
@@ -16,16 +53,20 @@ extend type Mutation {
     createEvent(
         # Event initiator id
         userId: ID!
+        # Dto with new event properties
         eventDto: CreateEventRequestDto!
-    ): Event
+    ): Event!
 
     # Patch event
-    patchEvent(
+    patchEventAdmin(
+        # Id of the event to patch
         eventId: ID!
+        # Dto with updated fields, nulls will be ignored
         requestDto: UpdateEventAdminRequestDto!
-    ): Event
+    ): Event!
 }
 
+# Dto for creating events
 input CreateEventRequestDto {
     annotation: String!
     category: ID!
@@ -38,6 +79,7 @@ input CreateEventRequestDto {
     title: String!
 }
 
+# Dto for updating events by admin, null fields will be ignored
 input UpdateEventAdminRequestDto {
     annotation: String
     categoryId: Long
@@ -51,8 +93,12 @@ input UpdateEventAdminRequestDto {
     stateAction: AdminEventStateAction
 }
 
+
+# Actions to modify state of a pending event
 enum AdminEventStateAction {
+    # Publish event
     PUBLISH_EVENT,
+    # Reject event
     REJECT_EVENT
 }
 
@@ -92,12 +138,47 @@ type Event {
 
 # Event state regarding moderation and publication
 enum EventState {
-    # Event is published and available to everyone
-    PUBLISHED,
+    # Event was published by admin and is available to everyone
+    PUBLISHED
     # Event is waiting for review
-    PENDING,
+    PENDING
     # Event was canceled by initiator
-    CANCELED,
+    CANCELED
     # Event was rejected by admin
     REJECTED
+}
+
+# Dto with event info available to everyone
+type EventShortDto {
+    id: ID
+    annotation:String
+    category: Category
+    confirmedRequests: Int
+    eventDate: LocalDateTime
+    initiator: UserShortDto
+    paid:Boolean
+    title:String
+    views:Long
+}
+
+# Dto for updating event by initiator
+type UpdateEventRequestDto {
+    annotation: String
+    description: String
+    category: Long
+    eventDate: LocalDateTime
+    location: Location
+    paid: Boolean
+    participantLimit: Int
+    requestModeration: Boolean
+    title: String
+    stateAction: PrivateEventStateAction
+}
+
+# Action to update event state
+enum PrivateEventStateAction {
+    # Put event in review queue
+    SEND_TO_REVIEW
+    # Cancel event
+    CANCEL_REVIEW
 }

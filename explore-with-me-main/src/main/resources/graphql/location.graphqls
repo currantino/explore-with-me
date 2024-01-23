@@ -8,20 +8,15 @@ type Location {
     lon: Float
 }
 
-# Input for creating locations
+# Input for locations
 input LocationInput {
+    # Location latitude
     lat: Float
+    # Location longitude
     lon: Float
 }
 
 extend type Query {
     # Get location by id
     location(id: ID!): Location
-}
-
-extend type Mutation {
-    # Create a new location
-    createLocation(
-        location: LocationInput
-    ): Location
 }

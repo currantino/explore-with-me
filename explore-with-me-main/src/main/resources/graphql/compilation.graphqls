@@ -13,13 +13,30 @@ type Compilation {
 extend type Query {
     # Get compilation by id
     compilation(id: ID!): Compilation
+    # Get multiple compilations
+    compilations: [Compilation!]!
 }
 
 extend type Mutation {
-    # Create compilation (can be empty), pinned is false by default
+    # Create a new compilation
     createCompilation(
-        title: String!
-        pinned: Boolean = false
-        events: [ID]
-    ) : Compilation
+        compilation: CompilationInput!
+    ) : Compilation!
+
+    # Delete compilation by id, returns null
+    deleteCompilation(
+        compilationId: ID!
+    ): Boolean
 }
+
+# Input for creating compilations
+input CompilationInput {
+    # Compilation title, not blank
+    title: String!
+    # Is the compilation pinned? false by default
+    pinned: Boolean = false
+    # Ids of events to include in compilation, possibly empty
+    events: [ID!]
+}
+
+#input UpdateCompilation

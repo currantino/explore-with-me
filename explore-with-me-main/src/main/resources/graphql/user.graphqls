@@ -10,8 +10,8 @@ extend type Query {
 extend type Mutation {
     # Create a new user
     createUser(user: UserInput!): User
-    # Remove user by id
-    removeUserById(id: ID!): User
+    # Remove user by id, returns null
+    removeUser(id: ID!): Boolean
 }
 
 # Input to create users
@@ -29,5 +29,10 @@ type User {
     # User email
     email: String
     # User name
+    name: String
+}
+
+type UserShortDto {
+    id: ID
     name: String
 }

@@ -20,13 +20,21 @@ public class GraphQLAdminUserController {
     private final UserService userService;
 
     @QueryMapping
-    public List<ReadUserDto> getUsers(@Argument List<Long> ids, @Argument Integer from, @Argument Integer size) {
+    public List<ReadUserDto> getUsers(
+            @Argument
+            List<Long> ids,
+            @Argument
+            Integer from,
+            @Argument
+            Integer size
+    ) {
         return userService.getUsers(ids, from, size).getContent();
     }
 
     @MutationMapping
     public ResponseEntity<Void> removeUser(
-            @Argument Long id
+            @Argument
+            Long id
     ) {
         userService.removeUserById(id);
         return ResponseEntity
@@ -35,7 +43,11 @@ public class GraphQLAdminUserController {
     }
 
     @MutationMapping
-    public CreateUserResponseDto createUser(@Argument @Valid CreateUserRequestDto user) {
+    public CreateUserResponseDto createUser(
+            @Argument
+            @Valid
+            CreateUserRequestDto user
+    ) {
         return userService.createUser(user);
     }
 

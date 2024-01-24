@@ -22,12 +22,8 @@ public class AdminCompilationService {
 
     public CompilationDto createCompilation(NewCompilationDto compilationDto) {
         Compilation compilation = compilationMapper.toEntity(compilationDto);
-
-        return compilationMapper
-                .toDto(
-                        compilationRepository
-                                .save(compilation)
-                );
+        Compilation saved = compilationRepository.save(compilation);
+        return compilationMapper.toDto(saved);
     }
 
     @Transactional

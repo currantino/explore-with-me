@@ -20,6 +20,7 @@ extend type Query {
 extend type Mutation {
     # Create a new compilation
     createCompilation(
+        # New compilation data
         compilation: CompilationInput!
     ) : Compilation!
 
@@ -27,6 +28,14 @@ extend type Mutation {
     deleteCompilation(
         compilationId: ID!
     ): Boolean
+
+    # Update compilation
+    patchCompilation(
+        # Id of compilation to update
+        compilationId: ID!
+        # Updated compilation data
+        compilation: UpdateCompilationInput!
+    ): Compilation
 }
 
 # Input for creating compilations
@@ -39,4 +48,12 @@ input CompilationInput {
     events: [ID!]
 }
 
-#input UpdateCompilation
+# Input for updating compilations
+input UpdateCompilationInput {
+    # Updated compilation title, not blank if not null
+    title : String
+    # Updated pinned
+    pinned : Boolean
+    # Ids of events that will replace old ones
+    events : [ID!]
+}

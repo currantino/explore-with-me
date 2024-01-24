@@ -12,7 +12,17 @@ extend type Query {
         size: Int = 10
         # Comment filter
         filter: CommentFilter
-    ) :[Comment]
+    ) :[CommentDto]
+}
+
+
+type CommentDto {
+    id: ID
+    eventId: ID
+    author: UserShortDto
+    text: String
+    createdOn: LocalDateTime
+    state: CommentState
 }
 
 # Comment filter

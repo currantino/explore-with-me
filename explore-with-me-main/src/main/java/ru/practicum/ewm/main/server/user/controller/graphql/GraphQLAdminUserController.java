@@ -32,14 +32,11 @@ public class GraphQLAdminUserController {
     }
 
     @MutationMapping
-    public ResponseEntity<Void> removeUser(
+    public void removeUser(
             @Argument
             Long id
     ) {
         userService.removeUserById(id);
-        return ResponseEntity
-                .noContent()
-                .build();
     }
 
     @MutationMapping

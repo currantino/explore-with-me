@@ -30,8 +30,8 @@ public class AdminCommentService {
             throw new InvalidStateActionException("You cannot change state of a comment if it is not PENDING.");
         }
         comment.setState(state);
-        Comment saved = commentRepository.save(comment);
-        return commentMapper.toDto(saved);
+//        Comment saved = commentRepository.save(comment);
+        return commentMapper.toDto(comment);
     }
 
     @Transactional

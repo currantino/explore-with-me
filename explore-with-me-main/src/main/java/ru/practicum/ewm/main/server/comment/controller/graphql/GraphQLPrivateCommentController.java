@@ -16,7 +16,6 @@ import ru.practicum.ewm.main.server.comment.service.PrivateCommentService;
 import javax.validation.Valid;
 import java.util.List;
 
-@Validated
 @Controller
 @RequiredArgsConstructor
 public class GraphQLPrivateCommentController {
@@ -25,9 +24,9 @@ public class GraphQLPrivateCommentController {
     @MutationMapping
     public CommentDto createComment(
             @Argument
-            Long authorId,
-            @Argument
             Long eventId,
+            @Argument
+            Long authorId,
             @Argument
             @Valid
             CreateCommentDto comment
@@ -57,15 +56,13 @@ public class GraphQLPrivateCommentController {
     }
 
     @MutationMapping
-    public ResponseEntity<Void> deleteComment(
+    public void deleteComment(
             @Argument
             Long userId,
             @Argument
             Long commentId
     ) {
         commentService.deleteComment(commentId, userId);
-        return ResponseEntity.noContent()
-                .build();
     }
 
     @QueryMapping

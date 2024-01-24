@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import ru.practicum.ewm.main.server.comment.dto.CommentDto;
@@ -30,12 +29,11 @@ public class GraphQLAdminCommentController {
     }
 
     @MutationMapping
-    public ResponseEntity<Void> deleteCommentById(
+    public void deleteCommentById(
             @Argument
             Long commentId
     ) {
         commentService.deleteCommentById(commentId);
-        return ResponseEntity.noContent().build();
     }
 
     @QueryMapping

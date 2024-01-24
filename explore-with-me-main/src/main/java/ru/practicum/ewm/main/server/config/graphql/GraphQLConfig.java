@@ -3,6 +3,7 @@ package ru.practicum.ewm.main.server.config.graphql;
 import graphql.scalars.ExtendedScalars;
 import graphql.schema.GraphQLScalarType;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.graphql.GraphQlSourceBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.graphql.data.query.QuerydslDataFetcher;
@@ -27,7 +28,6 @@ public class GraphQLConfig {
     private final LocationRepository locationRepository;
     private final CommentRepository commentRepository;
     private final CompilationRepository compilationRepository;
-    private final ParticipationRequestRepository participationRequestRepository;
 
     @Bean
     public RuntimeWiringConfigurer runtimeWiringConfigurer() {
@@ -39,16 +39,16 @@ public class GraphQLConfig {
                                 "events", QuerydslDataFetcher.builder(eventRepository).many(),
                                 "locations", QuerydslDataFetcher.builder(locationRepository).many(),
                                 "comments", QuerydslDataFetcher.builder(commentRepository).many(),
-                                "compilations", QuerydslDataFetcher.builder(compilationRepository).many(),
-                                "participationrequests", QuerydslDataFetcher.builder(participationRequestRepository).many()
+                                "compilations", QuerydslDataFetcher.builder(compilationRepository).many()
                         ))
                 )
                 .scalar(ExtendedScalars.GraphQLLong)
                 .scalar(GraphQLScalarType.newScalar()
-                        .name("LocalDateTime")
-                        .description("GraphQL scalar that represents java.time.LocalDateTime.")
-                        .coercing(localDateTimeCoercing)
-                        .build());
+                                .name("LocalDateTime")
+                                .description("GraphQL scalar that represents java.time.LocalDateTime.")
+                                .coercing(localDateTimeCoercing)
+                                .build())
+                .build();
     }
 
 }

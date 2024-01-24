@@ -114,6 +114,13 @@ public class PrivateCommentService {
             Integer size,
             CommentFilter filter
     ) {
+        Pageable pageRequest = PageRequest.of(from, size);
+        if (filter == null) {
+            return commentRepository
+                    .findAll(pageRequest)
+                    .map(commentMapper::toDto)
+                    .getContent();
+        }
         BooleanBuilder predicate = new BooleanBuilder();
         if (filter.getAuthorId() != null) {
             predicate.and(comment.author.id.eq(filter.getAuthorId()));
@@ -125,7 +132,6 @@ public class PrivateCommentService {
             predicate.and(comment.state.eq(filter.getState()));
         }
 
-        Pageable pageRequest = PageRequest.of(from, size);
         return commentRepository
                 .findAll(predicate, pageRequest)
                 .map(commentMapper::toDto)

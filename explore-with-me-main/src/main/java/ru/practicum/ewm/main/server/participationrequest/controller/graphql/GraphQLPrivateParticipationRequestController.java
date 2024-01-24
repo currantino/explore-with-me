@@ -7,6 +7,7 @@ import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import ru.practicum.ewm.main.server.participationrequest.dto.ParticipationRequestDto;
+import ru.practicum.ewm.main.server.participationrequest.dto.ParticipationRequestFilter;
 import ru.practicum.ewm.main.server.participationrequest.service.PrivateParticipationRequestService;
 
 import java.util.List;
@@ -27,13 +28,6 @@ public class GraphQLPrivateParticipationRequestController {
         return participationRequestService.createParticipationRequest(requesterId, eventId);
     }
 
-    @QueryMapping
-    public List<ParticipationRequestDto> getParticipationRequestsByParticipatorId(
-            @Argument
-            Long id
-    ) {
-        return participationRequestService.getParticipationRequestsByParticipatorId(id);
-    }
 
     @MutationMapping
     public ParticipationRequestDto cancelParticipationRequest(
@@ -43,6 +37,20 @@ public class GraphQLPrivateParticipationRequestController {
             Long requestId
     ) {
         return participationRequestService.cancelParticipationRequest(userId, requestId);
+    }
+
+    @QueryMapping
+    public List<ParticipationRequestDto> participationRequests(
+            @Argument
+            Integer from,
+            @Argument
+            Integer size,
+            @Argument
+            ParticipationRequestFilter filter
+    ) {
+        return participationRequestService.getFiltered(
+                from, size, filter
+        );
     }
 
 }

@@ -1,8 +1,12 @@
 package ru.practicum.ewm.main.server.comment.service;
 
+import com.querydsl.core.BooleanBuilder;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.ewm.main.server.comment.dto.CommentDto;
+import ru.practicum.ewm.main.server.comment.dto.CommentFilter;
 import ru.practicum.ewm.main.server.comment.dto.CreateCommentDto;
 import ru.practicum.ewm.main.server.comment.dto.UpdateCommentDto;
 import ru.practicum.ewm.main.server.comment.entity.Comment;
@@ -17,9 +21,11 @@ import ru.practicum.ewm.main.server.user.entity.User;
 import ru.practicum.ewm.main.server.user.repository.UserRepository;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Objects;
 
 import static java.time.LocalDateTime.now;
+import static ru.practicum.ewm.main.server.comment.entity.QComment.comment;
 
 @Service
 @RequiredArgsConstructor
@@ -74,7 +80,10 @@ public class PrivateCommentService {
 
 
     @Transactional
-    public void deleteComment(Long commentId, Long userId) {
+    public void deleteComment(
+            Long commentId,
+            Long userId
+    ) {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new CommentNotFoundException("Could not find comment to delete"));
         User requester = userRepository.findById(userId)
@@ -98,5 +107,28 @@ public class PrivateCommentService {
         return commentRepository.findById(commentId)
                 .map(commentMapper::toDto)
                 .orElseThrow(() -> new CommentNotFoundException("Could not find the requested comment."));
+    }
+
+    public List<CommentDto> getComments(
+            Integer from,
+            Integer size,
+            CommentFilter filter
+    ) {
+        BooleanBuilder predicate = new BooleanBuilder();
+        if (filter.getAuthorId() != null) {
+            predicate.and(comment.author.id.eq(filter.getAuthorId()));
+        }
+        if (filter.getEventId() != null) {
+            predicate.and(comment.event.id.eq(filter.getEventId()));
+        }
+        if (filter.getState() != null) {
+            predicate.and(comment.state.eq(filter.getState()));
+        }
+
+        Pageable pageRequest = PageRequest.of(from, size);
+        return commentRepository
+                .findAll(predicate, pageRequest)
+                .map(commentMapper::toDto)
+                .getContent();
     }
 }

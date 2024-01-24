@@ -1,3 +1,71 @@
+extend type Query {
+    # Get comment by id
+    comment(
+        id: ID
+    ): Comment
+
+    # Comments with filtering and pagination
+    comments(
+        # Start page, default is 0
+        from: Int = 0
+        # Page size, default is 10
+        size: Int = 10
+        # Comment filter
+        filter: CommentFilter
+    ) :[Comment]
+}
+
+# Comment filter
+input CommentFilter {
+    authorId: ID
+    eventId: ID
+    state: CommentState
+}
+
+extend type Mutation {
+    # Create new comment
+    createComment(
+        # Comment author id
+        authorId: ID!
+        # Commented event id
+        eventId: ID!
+        # New comment
+        comment: CreateCommentDto!
+    ): Comment
+
+    # Update comment (available only to comment author)
+    updateComment(
+        # Requester id
+        userId: ID!
+        # Id of the comment to update
+        commentId: ID!
+        # Updated comment
+        comment: UpdateCommentDto!
+    ): Comment
+
+    # Delete comment, returns null (available only to comment author)
+    deleteComment(
+        # Requester id
+        userId: ID!
+        # Id of the comment to delete
+        commentId: ID!
+    ): Boolean
+
+    # Update comment state (available only to admin)
+    updateCommentState(
+        # Id of the comment to update
+        commentId: ID!
+        # New comment state
+        commentState: CommentState!
+    ) : Comment
+
+    # Delete comment by id, returns null (available only to admin)
+    deleteCommentById(
+        # Id of the comment to delete
+        commentId: ID!
+    ):Boolean
+}
+
 # Event comment
 type Comment {
     # Comment id
@@ -22,4 +90,16 @@ enum CommentState {
     ACCEPTED,
     # Comment is rejected after review
     REJECTED
+}
+
+# Input for creating comments
+input CreateCommentDto {
+    # Comment content, must not be blank
+    text: String!
+}
+
+# Input for updating comments
+input UpdateCommentDto {
+    # Comment content
+    text: String
 }

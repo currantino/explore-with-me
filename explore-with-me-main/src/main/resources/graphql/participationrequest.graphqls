@@ -28,17 +28,27 @@ extend type Query {
     # Get participation request filtered by id, requester id or event id
     participationRequest(
         id: ID
-        requester: ID
-        event: ID
-    ): [ParticipationRequest]
+        requesterId: ID
+        eventId: ID
+    ): [ParticipationRequest!]!
+    # Get all requests made by user
+    getParticipationRequestsByParticipatorId(
+        id: ID!
+    ): [ParticipationRequest!]!
 }
 
 extend type Mutation {
     # Create participation request
     createParticipationRequest(
-        # Id of event to participate
-        eventId: ID!
         # Id of requester
         requesterId: ID!
-    ):ParticipationRequest
+        # Id of event to participate (event state must be published)
+        eventId: ID!
+    ): ParticipationRequest
+
+    # Cancel participation request (available only to requester)
+    cancelParticipationRequest(
+        userId: ID!
+        requestId: ID!
+    ): ParticipationRequest
 }

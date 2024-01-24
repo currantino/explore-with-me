@@ -29,7 +29,10 @@ public class PrivateParticipationRequestService {
     private final CustomEventRepository eventRepository;
     private final ParticipationRequestMapper participationRequestMapper;
 
-    public ParticipationRequestDto createParticipationRequest(Long userId, Long eventId) {
+    public ParticipationRequestDto createParticipationRequest(
+            Long userId,
+            Long eventId
+    ) {
         User requester = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("Could not find the requested user."));
         Event event = eventRepository.findById(eventId)
@@ -72,7 +75,10 @@ public class PrivateParticipationRequestService {
                 .collect(toList());
     }
 
-    public ParticipationRequestDto cancelParticipationRequest(Long userId, Long requestId) {
+    public ParticipationRequestDto cancelParticipationRequest(
+            Long userId,
+            Long requestId
+    ) {
         return participationRequestRepository.findById(requestId)
                 .map(
                         request -> {
@@ -95,7 +101,10 @@ public class PrivateParticipationRequestService {
         }
     }
 
-    private void checkIfRequesterIsNotInitiatorOfEvent(Long userId, Event event) {
+    private void checkIfRequesterIsNotInitiatorOfEvent(
+            Long userId,
+            Event event
+    ) {
         if (Objects.equals(event.getInitiator().getId(), userId)) {
             throw new InitiatorParticipationRequestException("You cannot request participation in the event if you are its initiator");
         }

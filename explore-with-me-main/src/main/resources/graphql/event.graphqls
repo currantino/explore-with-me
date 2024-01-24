@@ -1,5 +1,9 @@
 extend type Query {
-    # Get events with filtering, default page size is 10
+
+    # Get event by id
+    event(eventId: ID!): Event
+
+    # Get events with filtering and pagination (available to admin)
     getEvents(
         # Ids of users who initiated the event
         userIds: [ID!]
@@ -7,27 +11,38 @@ extend type Query {
         states: [EventState!]
         # Ids of event categories
         categoryIds: [ID!]
-        # Search range start by eventDate
+        # Range start of event date
         rangeStart: LocalDateTime
         # Search range end of eventDate
         rangeEnd: LocalDateTime
-        # Start page number starting from 0
+        # Range end of event date
         from: Int = 0
         # Page size, default is 10
         size: Int = 10
     ) : [Event!]
 
+    # Get events with filtering and pagination (available to anyone)
     getEventsPublic(
+        # Text included in title, annotation or description of the event
         searchQuery : String
+        # Ids of wanted categories
         categoryIds: [ID!]
+        # Is event paid
         paid : Boolean
+        # Range start of event date
         rangeStart : LocalDateTime
+        # Range end of event date
         rangeEnd : LocalDateTime
+        # Get only available events
         onlyAvailable : Boolean = false
-        sort : EventSort
+        # Sorting order
+        sort : EventSort = VIEWS
+        # Start page number, default is 0
         from : Int = 0
+        # Page size, default id 10
         size : Int = 10
-    ):[Event]
+    ): [EventShortDto]
+
     # Get brief info about events created by user
     getEventsByUserId(
         userId: ID!
@@ -35,11 +50,11 @@ extend type Query {
         size: Int = 10
     ): [EventShortDto]
 
-    # Get full event info (for initiator)
+    # Get full event info (available only to initiator)
     getEventByInitiator(
         userId: ID!
         eventId: ID!
-    ):Event
+    ): Event
 
 }
 
@@ -55,17 +70,51 @@ extend type Mutation {
         userId: ID!
         # Dto with new event properties
         eventDto: CreateEventRequestDto!
-    ): Event!
+    ): Event
 
-    # Patch event
+    # Patch event (available to admin)
     patchEventAdmin(
         # Id of the event to patch
         eventId: ID!
         # Dto with updated fields, nulls will be ignored
-        requestDto: UpdateEventAdminRequestDto!
-    ): Event!
+        eventDto: UpdateEventAdminRequestDto!
+    ): Event
+
+    # Patch event (available to initiator)
+    patchEventPrivate(
+        # Id of the event to patch
+        eventId: ID!
+        # Requester id
+        userId: ID!
+        # Dto with updated fields, nulls will be ignored
+        event: UpdateEventRequestDto!
+    ): Event
+
+    # Update multiple participation request status: accept/reject (available to initiator)
+    updateParticipationRequestStatus(
+        # Requester id
+        userId: ID!
+        # Event id
+        eventId: ID!
+        # Data to update
+        request: EventStatusUpdateRequest!
+    ): EventRequestStatusUpdateResult
 }
 
+# Info about event participation requests
+type EventRequestStatusUpdateResult {
+    confirmedRequests: [ParticipationRequestDto]
+    rejectedRequests: [ParticipationRequestDto]
+}
+
+
+# Dto for accepting/rejecting participation requests
+input EventStatusUpdateRequest {
+    # Ids of participation request for updating
+    requestIds: [ID] = []
+    # New participation request status
+    status: ParticipationRequestStatus!
+}
 # Dto for creating events
 input CreateEventRequestDto {
     annotation: String!
@@ -151,23 +200,23 @@ enum EventState {
 # Dto with event info available to everyone
 type EventShortDto {
     id: ID
-    annotation:String
+    annotation: String
     category: Category
     confirmedRequests: Int
     eventDate: LocalDateTime
     initiator: UserShortDto
-    paid:Boolean
-    title:String
-    views:Long
+    paid: Boolean
+    title: String
+    views: Long
 }
 
 # Dto for updating event by initiator
-type UpdateEventRequestDto {
+input UpdateEventRequestDto {
     annotation: String
     description: String
     category: Long
     eventDate: LocalDateTime
-    location: Location
+    location: LocationInput
     paid: Boolean
     participantLimit: Int
     requestModeration: Boolean

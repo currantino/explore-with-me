@@ -25,18 +25,24 @@ enum ParticipationRequestStatus {
 }
 
 extend type Query {
-    # Get participation request filtered by id, requester id or event id
-    participationRequest(
-        id: ID
-        requesterId: ID
-        eventId: ID
-    ): [ParticipationRequest!]!
-    # Get all requests made by user
-    getParticipationRequestsByParticipatorId(
-        id: ID!
-    ): [ParticipationRequest!]!
+
+    # Get participation request by id
+    participationRequest(id: ID): ParticipationRequest
+
+    # Get participation requests with filtering and pagination
+    participationRequests(
+        from: Int = 0
+        size: Int = 10
+        filter: ParticipationRequestFilter
+    ): [ParticipationRequestDto]
 }
 
+# Filter for participation requests
+input ParticipationRequestFilter {
+    requesterId: ID,
+    eventId: ID,
+    status: ParticipationRequestStatus,
+}
 extend type Mutation {
     # Create participation request
     createParticipationRequest(
@@ -51,4 +57,12 @@ extend type Mutation {
         userId: ID!
         requestId: ID!
     ): ParticipationRequest
+}
+
+type ParticipationRequestDto {
+    id: ID
+    created: LocalDateTime
+    event: ID
+    requester: ID
+    status: ParticipationRequestStatus
 }

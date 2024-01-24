@@ -22,7 +22,10 @@ public interface ParticipationRequestRepository extends JpaRepository<Participat
             "WHERE " +
             "   pr.event.id = :eventId" +
             "   AND pr.status = 'PENDING' ")
-    int updateStatusByEventIdAndPending(Long eventId, ParticipationRequestStatus newStatus);
+    int updateStatusByEventIdAndPending(
+            Long eventId,
+            ParticipationRequestStatus newStatus
+    );
 
     @Query("SELECT " +
             "   pr " +

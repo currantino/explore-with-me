@@ -23,6 +23,9 @@ public interface CompilationMapper {
     }
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    Compilation partialUpdate(CompilationDto compilationDto, @MappingTarget Compilation compilation);
+    Compilation partialUpdate(CompilationDto compilationDto,
+                              @MappingTarget
+                              Compilation compilation
+    );
 
 }

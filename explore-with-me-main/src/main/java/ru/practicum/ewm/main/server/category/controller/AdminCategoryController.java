@@ -26,7 +26,8 @@ public class AdminCategoryController {
     public CreateCategoryResponseDto createCategory(
             @Valid
             @RequestBody
-            CreateCategoryRequestDto requestDto) {
+            CreateCategoryRequestDto requestDto
+    ) {
         return categoryService.createCategory(requestDto);
     }
 
@@ -36,7 +37,8 @@ public class AdminCategoryController {
             Long catId,
             @Valid
             @RequestBody
-            PatchCategoryRequestDto requestDto) {
+            PatchCategoryRequestDto requestDto
+    ) {
         return categoryService.patchCategory(catId, requestDto);
     }
 

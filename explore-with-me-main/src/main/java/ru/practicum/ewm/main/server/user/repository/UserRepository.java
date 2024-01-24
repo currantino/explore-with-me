@@ -14,7 +14,10 @@ import java.util.List;
 
 @GraphQlRepository
 public interface UserRepository extends JpaRepository<User, Long>, QuerydslPredicateExecutor<User> {
-    Page<User> findAllByIdIn(List<Long> ids, Pageable pageable);
+    Page<User> findAllByIdIn(
+            List<Long> ids,
+            Pageable pageable
+    );
 
     @Query("SELECT " +
             "   pr " +

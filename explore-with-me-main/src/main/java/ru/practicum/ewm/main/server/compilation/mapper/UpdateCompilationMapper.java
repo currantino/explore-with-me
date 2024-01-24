@@ -15,7 +15,8 @@ public interface UpdateCompilationMapper {
     @Mapping(target = "events", qualifiedByName = "idToEvent")
     Compilation partialUpdate(
             UpdateCompilationRequestDto updateCompilationRequestDto,
-            @MappingTarget Compilation compilation
+            @MappingTarget
+            Compilation compilation
     );
 
 

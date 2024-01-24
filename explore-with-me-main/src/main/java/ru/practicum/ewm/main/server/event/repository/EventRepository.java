@@ -16,7 +16,10 @@ public interface EventRepository extends CustomEventRepository, QuerydslPredicat
             "   Event e " +
             "WHERE " +
             "   e.initiator.id = :userId")
-    Page<Event> findAllByInitiator(Long userId, Pageable pageRequest);
+    Page<Event> findAllByInitiator(
+            Long userId,
+            Pageable pageRequest
+    );
 
     @Query("SELECT " +
             "   e.initiator.id " +

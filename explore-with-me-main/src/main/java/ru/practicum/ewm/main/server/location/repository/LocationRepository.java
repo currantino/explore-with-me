@@ -12,12 +12,15 @@ import java.util.Optional;
 public interface LocationRepository extends JpaRepository<Location, Long>, QuerydslPredicateExecutor<Location> {
     @Query(
             "SELECT " +
-            "   l " +
-            "FROM " +
-            "   Location l " +
-            "WHERE " +
-            "   ABS(l.lon - :lon) < 0.0001 " +
-            "   AND ABS(l.lat - :lat) < 0.0001"
+                    "   l " +
+                    "FROM " +
+                    "   Location l " +
+                    "WHERE " +
+                    "   ABS(l.lon - :lon) < 0.0001 " +
+                    "   AND ABS(l.lat - :lat) < 0.0001"
     )
-    Optional<Location> findByLonAndLat(Double lon, Double lat);
+    Optional<Location> findByLonAndLat(
+            Double lon,
+            Double lat
+    );
 }

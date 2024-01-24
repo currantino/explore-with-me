@@ -44,7 +44,7 @@ public class GraphQLLocalDateTimeCoercing implements Coercing<LocalDateTime, Str
         if (!(input instanceof StringValue)) {
             throw new CoercingParseLiteralException(
                     format("Expected AST type 'StringValue' but was '%s'",
-                            input.getClass().getSimpleName())
+                           input.getClass().getSimpleName())
             );
         }
         try {

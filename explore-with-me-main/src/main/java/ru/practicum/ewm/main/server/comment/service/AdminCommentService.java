@@ -23,7 +23,10 @@ public class AdminCommentService {
     private final CommentMapper commentMapper;
 
     @Transactional
-    public CommentDto updateCommentState(Long commentId, CommentState state) {
+    public CommentDto updateCommentState(
+            Long commentId,
+            CommentState state
+    ) {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new CommentNotFoundException("Could not find the requested comment."));
         if (!CommentState.PENDING.equals(comment.getState())) {

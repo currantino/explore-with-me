@@ -15,7 +15,10 @@ import javax.validation.ValidationException;
 public class GraphqlCustomExceptionHandler extends DataFetcherExceptionResolverAdapter {
 
     @Override
-    protected GraphQLError resolveToSingleError(Throwable e, DataFetchingEnvironment env) {
+    protected GraphQLError resolveToSingleError(
+            Throwable e,
+            DataFetchingEnvironment env
+    ) {
         GraphqlErrorBuilder errorBuilder = GraphqlErrorBuilder
                 .newError(env)
                 .message(e.getMessage());

@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import ru.practicum.ewm.main.server.user.dto.create.CreateUserRequestDto;
 import ru.practicum.ewm.main.server.user.dto.create.CreateUserResponseDto;

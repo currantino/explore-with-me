@@ -4,18 +4,22 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.querydsl.QuerydslPredicateExecutor;
+import org.springframework.graphql.data.GraphQlRepository;
 import ru.practicum.ewm.main.server.event.entity.Event;
 
-@Repository
-public interface EventRepository extends CustomEventRepository {
+@GraphQlRepository
+public interface EventRepository extends CustomEventRepository, QuerydslPredicateExecutor<Event> {
     @Query("SELECT " +
             "   e " +
             "FROM " +
             "   Event e " +
             "WHERE " +
             "   e.initiator.id = :userId")
-    Page<Event> findAllByInitiator(Long userId, Pageable pageRequest);
+    Page<Event> findAllByInitiator(
+            Long userId,
+            Pageable pageRequest
+    );
 
     @Query("SELECT " +
             "   e.initiator.id " +

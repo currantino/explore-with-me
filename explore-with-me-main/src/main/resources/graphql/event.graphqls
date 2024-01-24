@@ -1,0 +1,233 @@
+extend type Query {
+
+    # Get event by id
+    event(eventId: ID!): Event
+
+    # Get events with filtering and pagination (available to admin)
+    getEvents(
+        # Ids of users who initiated the event
+        userIds: [ID!]
+        # States of events
+        states: [EventState!]
+        # Ids of event categories
+        categoryIds: [ID!]
+        # Range start of event date
+        rangeStart: LocalDateTime
+        # Search range end of eventDate
+        rangeEnd: LocalDateTime
+        # Range end of event date
+        from: Int = 0
+        # Page size, default is 10
+        size: Int = 10
+    ) : [Event!]
+
+    # Get events with filtering and pagination (available to anyone)
+    getEventsPublic(
+        # Text included in title, annotation or description of the event
+        searchQuery : String
+        # Ids of wanted categories
+        categoryIds: [ID!]
+        # Is event paid
+        paid : Boolean
+        # Range start of event date
+        rangeStart : LocalDateTime
+        # Range end of event date
+        rangeEnd : LocalDateTime
+        # Get only available events
+        onlyAvailable : Boolean = false
+        # Sorting order
+        sort : EventSort = VIEWS
+        # Start page number, default is 0
+        from : Int = 0
+        # Page size, default id 10
+        size : Int = 10
+    ): [EventShortDto]
+
+    # Get brief info about events created by user
+    getEventsByUserId(
+        userId: ID!
+        from: Int = 0
+        size: Int = 10
+    ): [EventShortDto]
+
+    # Get full event info (available only to initiator)
+    getEventByInitiator(
+        userId: ID!
+        eventId: ID!
+    ): Event
+
+}
+
+enum EventSort {
+    EVENT_DATE
+    VIEWS
+}
+
+extend type Mutation {
+    # Create event
+    createEvent(
+        # Event initiator id
+        userId: ID!
+        # Dto with new event properties
+        eventDto: CreateEventRequestDto!
+    ): Event
+
+    # Patch event (available to admin)
+    patchEventAdmin(
+        # Id of the event to patch
+        eventId: ID!
+        # Dto with updated fields, nulls will be ignored
+        eventDto: UpdateEventAdminRequestDto!
+    ): Event
+
+    # Patch event (available to initiator)
+    patchEventPrivate(
+        # Id of the event to patch
+        eventId: ID!
+        # Requester id
+        userId: ID!
+        # Dto with updated fields, nulls will be ignored
+        event: UpdateEventRequestDto!
+    ): Event
+
+    # Update multiple participation request status: accept/reject (available to initiator)
+    updateParticipationRequestStatus(
+        # Requester id
+        userId: ID!
+        # Event id
+        eventId: ID!
+        # Data to update
+        request: EventStatusUpdateRequest!
+    ): EventRequestStatusUpdateResult
+}
+
+# Info about event participation requests
+type EventRequestStatusUpdateResult {
+    confirmedRequests: [ParticipationRequestDto]
+    rejectedRequests: [ParticipationRequestDto]
+}
+
+
+# Dto for accepting/rejecting participation requests
+input EventStatusUpdateRequest {
+    # Ids of participation request for updating
+    requestIds: [ID] = []
+    # New participation request status
+    status: ParticipationRequestStatus!
+}
+# Dto for creating events
+input CreateEventRequestDto {
+    annotation: String!
+    category: ID!
+    description: String!
+    eventDate: LocalDateTime!
+    location: LocationInput!
+    paid: Boolean = false
+    participantLimit: Int = 0
+    requestModeration: Boolean = false
+    title: String!
+}
+
+# Dto for updating events by admin, null fields will be ignored
+input UpdateEventAdminRequestDto {
+    annotation: String
+    categoryId: Long
+    description: String
+    eventDate: LocalDateTime
+    location: LocationInput
+    paid: Boolean
+    participantLimit: Int
+    requestModeration: Boolean
+    title: String
+    stateAction: AdminEventStateAction
+}
+
+
+# Actions to modify state of a pending event
+enum AdminEventStateAction {
+    # Publish event
+    PUBLISH_EVENT,
+    # Reject event
+    REJECT_EVENT
+}
+
+# Event, key application entity
+type Event {
+    # Event id
+    id: ID
+    # Event annotation
+    annotation: String
+    # Event category
+    category: Category
+    # Number of confirmed participation requests
+    confirmedRequests: Int
+    # Event description
+    description: String
+    # Datetime when the event was created
+    createdOn: LocalDateTime
+    # Datetime when the event is held
+    eventDate: LocalDateTime
+    # User, who created the event
+    initiator: User
+    # Event location
+    location: Location
+    # Is the event paid
+    paid: Boolean
+    # Participant limit, 0 participant limit means anyone can participate
+    participantLimit: Int
+    # Event state regarding moderation and publication
+    state: EventState
+    # Event title
+    title: String
+    # Number of views of the event
+    views: Long
+    # List of related comments
+    comments: [Comment]
+}
+
+# Event state regarding moderation and publication
+enum EventState {
+    # Event was published by admin and is available to everyone
+    PUBLISHED
+    # Event is waiting for review
+    PENDING
+    # Event was canceled by initiator
+    CANCELED
+    # Event was rejected by admin
+    REJECTED
+}
+
+# Dto with event info available to everyone
+type EventShortDto {
+    id: ID
+    annotation: String
+    category: Category
+    confirmedRequests: Int
+    eventDate: LocalDateTime
+    initiator: UserShortDto
+    paid: Boolean
+    title: String
+    views: Long
+}
+
+# Dto for updating event by initiator
+input UpdateEventRequestDto {
+    annotation: String
+    description: String
+    category: Long
+    eventDate: LocalDateTime
+    location: LocationInput
+    paid: Boolean
+    participantLimit: Int
+    requestModeration: Boolean
+    title: String
+    stateAction: PrivateEventStateAction
+}
+
+# Action to update event state
+enum PrivateEventStateAction {
+    # Put event in review queue
+    SEND_TO_REVIEW
+    # Cancel event
+    CANCEL_REVIEW
+}

@@ -1,12 +1,16 @@
 package ru.practicum.ewm.main.server.participationrequest.service;
 
+import com.querydsl.core.BooleanBuilder;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.ewm.main.server.event.entity.Event;
 import ru.practicum.ewm.main.server.event.entity.state.EventState;
 import ru.practicum.ewm.main.server.event.repository.CustomEventRepository;
 import ru.practicum.ewm.main.server.exception.*;
 import ru.practicum.ewm.main.server.participationrequest.dto.ParticipationRequestDto;
+import ru.practicum.ewm.main.server.participationrequest.dto.ParticipationRequestFilter;
 import ru.practicum.ewm.main.server.participationrequest.dto.ParticipationRequestStatus;
 import ru.practicum.ewm.main.server.participationrequest.entity.ParticipationRequest;
 import ru.practicum.ewm.main.server.participationrequest.mapper.ParticipationRequestMapper;
@@ -20,6 +24,7 @@ import java.util.Objects;
 import static java.time.LocalDateTime.now;
 import static java.util.stream.Collectors.toList;
 import static ru.practicum.ewm.main.server.participationrequest.dto.ParticipationRequestStatus.*;
+import static ru.practicum.ewm.main.server.participationrequest.entity.QParticipationRequest.participationRequest;
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +34,10 @@ public class PrivateParticipationRequestService {
     private final CustomEventRepository eventRepository;
     private final ParticipationRequestMapper participationRequestMapper;
 
-    public ParticipationRequestDto createParticipationRequest(Long userId, Long eventId) {
+    public ParticipationRequestDto createParticipationRequest(
+            Long userId,
+            Long eventId
+    ) {
         User requester = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("Could not find the requested user."));
         Event event = eventRepository.findById(eventId)
@@ -72,7 +80,10 @@ public class PrivateParticipationRequestService {
                 .collect(toList());
     }
 
-    public ParticipationRequestDto cancelParticipationRequest(Long userId, Long requestId) {
+    public ParticipationRequestDto cancelParticipationRequest(
+            Long userId,
+            Long requestId
+    ) {
         return participationRequestRepository.findById(requestId)
                 .map(
                         request -> {
@@ -95,9 +106,40 @@ public class PrivateParticipationRequestService {
         }
     }
 
-    private void checkIfRequesterIsNotInitiatorOfEvent(Long userId, Event event) {
+    private void checkIfRequesterIsNotInitiatorOfEvent(
+            Long userId,
+            Event event
+    ) {
         if (Objects.equals(event.getInitiator().getId(), userId)) {
             throw new InitiatorParticipationRequestException("You cannot request participation in the event if you are its initiator");
         }
+    }
+
+    public List<ParticipationRequestDto> getFiltered(
+            Integer from,
+            Integer size,
+            ParticipationRequestFilter filter
+    ) {
+        Pageable pageRequest = PageRequest.of(from, size);
+        if (filter == null) {
+            return participationRequestRepository
+                    .findAll(pageRequest)
+                    .map(participationRequestMapper::toDto)
+                    .getContent();
+        }
+        BooleanBuilder predicate = new BooleanBuilder();
+        if (filter.getRequesterId() != null) {
+            predicate.and(participationRequest.requester.id.eq(filter.getRequesterId()));
+        }
+        if (filter.getEventId() != null) {
+            predicate.and(participationRequest.event.id.eq(filter.getEventId()));
+        }
+        if (filter.getStatus() != null) {
+            predicate.and(participationRequest.status.eq(filter.getStatus()));
+        }
+        return participationRequestRepository
+                .findAll(predicate, pageRequest)
+                .map(participationRequestMapper::toDto)
+                .getContent();
     }
 }

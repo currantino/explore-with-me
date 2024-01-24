@@ -32,7 +32,11 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
-    public Page<ReadUserDto> getUsers(List<Long> ids, Integer from, Integer size) {
+    public Page<ReadUserDto> getUsers(
+            List<Long> ids,
+            Integer from,
+            Integer size
+    ) {
         Pageable pageRequest = PageRequest.of(from, size);
         if (ids == null) {
             return userRepository.findAll(pageRequest)

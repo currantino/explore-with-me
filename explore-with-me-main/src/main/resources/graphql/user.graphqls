@@ -1,0 +1,38 @@
+extend type Query {
+    # Get users filtered by a list of ids with pagination, default page size is 10
+    getUsers(
+        ids: [ID!],
+        from: Int = 0,
+        size: Int = 10
+    ): [User]
+}
+
+extend type Mutation {
+    # Create a new user
+    createUser(user: UserInput!): User
+    # Remove user by id, returns null
+    removeUser(id: ID!): Boolean
+}
+
+# Input to create users
+input UserInput {
+    # User email
+    email: String!
+    # User name
+    name: String!
+}
+
+# Application user
+type User {
+    # User id
+    id: ID
+    # User email
+    email: String
+    # User name
+    name: String
+}
+
+type UserShortDto {
+    id: ID
+    name: String
+}

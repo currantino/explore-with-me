@@ -15,5 +15,8 @@ public interface LocationMapper {
     LocationDto toDto(Location location);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    Location partialUpdate(LocationDto locationDto, @MappingTarget Location location);
+    Location partialUpdate(LocationDto locationDto,
+                           @MappingTarget
+                           Location location
+    );
 }

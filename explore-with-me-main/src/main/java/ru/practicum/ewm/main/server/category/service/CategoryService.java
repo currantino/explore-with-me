@@ -33,7 +33,10 @@ public class CategoryService {
     }
 
 
-    public PatchCategoryResponseDto patchCategory(Long catId, PatchCategoryRequestDto requestDto) {
+    public PatchCategoryResponseDto patchCategory(
+            Long catId,
+            PatchCategoryRequestDto requestDto
+    ) {
         Category category = categoryRepository.findById(catId)
                 .orElseThrow(() -> new CategoryNotFoundException("Cannot find the requested category."));
         Category mapped = patchCategoryMapper.partialUpdate(requestDto, category);
@@ -41,7 +44,10 @@ public class CategoryService {
         return patchCategoryMapper.toResponseDto(mapped);
     }
 
-    public List<CategoryDto> getAllCategories(Integer from, Integer size) {
+    public List<CategoryDto> getAllCategories(
+            Integer from,
+            Integer size
+    ) {
         Pageable pageRequest = PageRequest.of(from, size);
         return categoryRepository
                 .findAll(pageRequest)

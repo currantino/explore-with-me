@@ -1,0 +1,14 @@
+{
+  "SCALAR": {
+    "LocalDateTime": {
+      "documentation": {
+        "example": "2016-10-07 01:08:03"
+      }
+    },
+    "Long": {
+      "documentation": {
+        "example": 12
+      }
+    }
+  }
+}

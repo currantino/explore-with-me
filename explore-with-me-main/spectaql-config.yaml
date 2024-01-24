@@ -1,0 +1,22 @@
+spectaql:
+  oneFile: true
+  targetDir: public
+
+introspection:
+  metadataFile: ./metadata.json
+  url: http://localhost:8080/graphql
+  metadatasPath: documentation
+  metadatas: true
+  extensions:
+    graphqlScalarExamples: true
+
+servers:
+  - url: http://localhost:8080/graphql
+    description: Local dev server
+info:
+  version: 1.0.0
+  title: Explore with me
+  description: Service to explore events
+  contact:
+    name: Matvey Smorodin
+

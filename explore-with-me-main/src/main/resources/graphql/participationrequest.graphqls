@@ -1,0 +1,68 @@
+# Request to participate in event
+type ParticipationRequest {
+    # Request id
+    id: ID
+    # Datetime when the request was created
+    created: LocalDateTime
+    # Event to participate
+    event: Event
+    # User, who requested participation
+    requester: User
+    # Participation status
+    status: ParticipationRequestStatus
+}
+
+# Participation request status
+enum ParticipationRequestStatus {
+    # Request was canceled by requester
+    CANCELED,
+    # Request is waiting for review
+    PENDING,
+    # Request was confirmed
+    CONFIRMED,
+    # Request was rejected
+    REJECTED
+}
+
+extend type Query {
+
+    # Get participation request by id
+    participationRequest(id: ID): ParticipationRequest
+
+    # Get participation requests with filtering and pagination
+    participationRequests(
+        from: Int = 0
+        size: Int = 10
+        filter: ParticipationRequestFilter
+    ): [ParticipationRequestDto]
+}
+
+# Filter for participation requests
+input ParticipationRequestFilter {
+    requesterId: ID,
+    eventId: ID,
+    status: ParticipationRequestStatus,
+}
+extend type Mutation {
+    # Create participation request
+    createParticipationRequest(
+        # Id of requester
+        requesterId: ID!
+        # Id of event to participate (event state must be published)
+        eventId: ID!
+    ): ParticipationRequest
+
+    # Cancel participation request (available only to requester)
+    cancelParticipationRequest(
+        userId: ID!
+        requestId: ID!
+    ): ParticipationRequest
+}
+
+type ParticipationRequestDto {
+    id: ID
+    created: LocalDateTime
+    event: ID
+    requester: ID
+    status: ParticipationRequestStatus
+}

@@ -1,0 +1,33 @@
+# Event category
+type Category{
+    # Category id
+    id: ID
+    # Category name
+    name: String
+}
+
+extend type Query {
+    # Get category by id or name
+    category(id: ID, name: String): Category
+    # Get categories by a list of ids
+    categories(id: [ID]): [Category]
+}
+
+extend type Mutation {
+    # Create a category
+    createCategory(category: CreateCategoryRequestDto!): Category
+    # Update a category
+    patchCategory(catId: ID!, category: PatchCategoryRequestDto!): Category
+    # Remove a category, always returns null
+    removeCategory(catId: ID!): Boolean
+}
+
+# Input for creating categories
+input CreateCategoryRequestDto {
+    name: String!
+}
+
+# Input for patching categories
+input PatchCategoryRequestDto {
+    name: String!
+}

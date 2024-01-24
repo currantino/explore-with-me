@@ -18,5 +18,8 @@ public interface AdminEventMapper {
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(source = "categoryId", target = "category.id")
-    Event partialUpdate(UpdateEventAdminRequestDto updateEventAdminRequestDto, @MappingTarget Event event);
+    Event partialUpdate(UpdateEventAdminRequestDto updateEventAdminRequestDto,
+                        @MappingTarget
+                        Event event
+    );
 }

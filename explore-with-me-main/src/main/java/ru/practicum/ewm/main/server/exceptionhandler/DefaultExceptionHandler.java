@@ -22,11 +22,11 @@ public class DefaultExceptionHandler {
         return ResponseEntity
                 .status(NOT_FOUND)
                 .body(ApiError.builder()
-                        .reason("The requested resource does not exist.")
-                        .message(e.getMessage())
-                        .timestamp(e.getTimestamp())
-                        .status(NOT_FOUND)
-                        .build());
+                              .reason("The requested resource does not exist.")
+                              .message(e.getMessage())
+                              .timestamp(e.getTimestamp())
+                              .status(NOT_FOUND)
+                              .build());
     }
 
     @ExceptionHandler
@@ -34,11 +34,11 @@ public class DefaultExceptionHandler {
     public ResponseEntity<ApiError> handleDataNotFoundException(final MethodArgumentNotValidException e) {
         return ResponseEntity.badRequest()
                 .body(ApiError.builder()
-                        .reason("The received request is invalid.")
-                        .message(e.getMessage())
-                        .timestamp(now())
-                        .status(BAD_REQUEST)
-                        .build());
+                              .reason("The received request is invalid.")
+                              .message(e.getMessage())
+                              .timestamp(now())
+                              .status(BAD_REQUEST)
+                              .build());
     }
 
     @ExceptionHandler
@@ -47,11 +47,11 @@ public class DefaultExceptionHandler {
         return ResponseEntity
                 .status(CONFLICT)
                 .body(ApiError.builder()
-                        .reason("Data integrity was violated.")
-                        .message(e.getMessage())
-                        .timestamp(now())
-                        .status(CONFLICT)
-                        .build());
+                              .reason("Data integrity was violated.")
+                              .message(e.getMessage())
+                              .timestamp(now())
+                              .status(CONFLICT)
+                              .build());
     }
 
     @ExceptionHandler
@@ -60,11 +60,11 @@ public class DefaultExceptionHandler {
         return ResponseEntity
                 .status(CONFLICT)
                 .body(ApiError.builder()
-                        .reason("Conflict with existing resources.")
-                        .message(e.getMessage())
-                        .timestamp(now())
-                        .status(CONFLICT)
-                        .build());
+                              .reason("Conflict with existing resources.")
+                              .message(e.getMessage())
+                              .timestamp(now())
+                              .status(CONFLICT)
+                              .build());
     }
 
     @ExceptionHandler
@@ -73,11 +73,11 @@ public class DefaultExceptionHandler {
         return ResponseEntity
                 .status(BAD_REQUEST)
                 .body(ApiError.builder()
-                        .reason("Invalid request.")
-                        .message(e.getMessage())
-                        .timestamp(now())
-                        .status(BAD_REQUEST)
-                        .build());
+                              .reason("Invalid request.")
+                              .message(e.getMessage())
+                              .timestamp(now())
+                              .status(BAD_REQUEST)
+                              .build());
     }
 
     @ExceptionHandler
@@ -86,11 +86,11 @@ public class DefaultExceptionHandler {
         return ResponseEntity
                 .status(INTERNAL_SERVER_ERROR)
                 .body(ApiError.builder()
-                        .reason("Unexpected error occurred!")
-                        .message(e.getMessage())
-                        .timestamp(now())
-                        .status(INTERNAL_SERVER_ERROR)
-                        .build());
+                              .reason("Unexpected error occurred!")
+                              .message(e.getMessage())
+                              .timestamp(now())
+                              .status(INTERNAL_SERVER_ERROR)
+                              .build());
     }
 
     @ExceptionHandler
@@ -99,10 +99,10 @@ public class DefaultExceptionHandler {
         return ResponseEntity
                 .status(FORBIDDEN)
                 .body(ApiError.builder()
-                        .reason("You do not have access to the requested resource.")
-                        .message(e.getMessage())
-                        .timestamp(now())
-                        .status(FORBIDDEN)
-                        .build());
+                              .reason("You do not have access to the requested resource.")
+                              .message(e.getMessage())
+                              .timestamp(now())
+                              .status(FORBIDDEN)
+                              .build());
     }
 }

@@ -1,0 +1,68 @@
+# Compilation of events
+type Compilation {
+    # Compilation id
+    id: ID!
+    # Compilation title
+    title: String!
+    # Is compilation pinned on the main page
+    pinned: Boolean
+    # Events of the compilation
+    events: [Event]
+}
+
+extend type Query {
+    # Get compilation by id
+    compilation(id: ID!): Compilation
+    # Get multiple compilations
+    compilations: [Compilation!]!
+    # Get compilations with pagination and filtering by pined
+    compilationsPaged(
+        # Filter pinned
+        pinned: Boolean = false
+        # Start page, default is 0
+        from: Int = 0
+        # Page size, default is 10
+        size: Int = 10
+    ):[Compilation!]!
+}
+
+extend type Mutation {
+    # Create a new compilation
+    createCompilation(
+        # New compilation data
+        compilation: CompilationInput!
+    ) : Compilation!
+
+    # Delete compilation by id, returns null
+    deleteCompilation(
+        compilationId: ID!
+    ): Boolean
+
+    # Update compilation
+    patchCompilation(
+        # Id of compilation to update
+        compilationId: ID!
+        # Updated compilation data
+        compilation: UpdateCompilationInput!
+    ): Compilation
+}
+
+# Input for creating compilations
+input CompilationInput {
+    # Compilation title, not blank
+    title: String!
+    # Is the compilation pinned? false by default
+    pinned: Boolean = false
+    # Ids of events to include in compilation, possibly empty
+    events: [ID!]
+}
+
+# Input for updating compilations
+input UpdateCompilationInput {
+    # Updated compilation title, not blank if not null
+    title : String
+    # Updated pinned
+    pinned : Boolean
+    # Ids of events that will replace old ones
+    events : [ID!]
+}

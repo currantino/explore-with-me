@@ -15,6 +15,15 @@ extend type Query {
     compilation(id: ID!): Compilation
     # Get multiple compilations
     compilations: [Compilation!]!
+    # Get compilations with pagination and filtering by pined
+    compilationsPaged(
+        # Filter pinned
+        pinned: Boolean = false
+        # Start page, default is 0
+        from: Int = 0
+        # Page size, default is 10
+        size: Int = 10
+    ):[Compilation!]!
 }
 
 extend type Mutation {

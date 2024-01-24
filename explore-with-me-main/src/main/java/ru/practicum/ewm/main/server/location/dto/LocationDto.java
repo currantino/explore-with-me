@@ -7,6 +7,7 @@ import javax.validation.constraints.Min;
 
 @Value
 public class LocationDto {
+    Long id;
     @Min(value = -90, message = "Latitude must be between -90 and 90.")
     @Max(value = 90, message = "Longitude must be between -90 and 90.")
     Double lat;

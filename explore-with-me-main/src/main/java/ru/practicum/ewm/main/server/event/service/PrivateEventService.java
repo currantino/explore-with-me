@@ -75,10 +75,7 @@ public class PrivateEventService {
                         location.getLon(),
                         location.getLat()
                 )
-                .orElse(
-                        locationRepository
-                                .saveAndFlush(location)
-                );
+                .orElseGet(() -> locationRepository.save(location));
     }
 
     public List<EventShortDto> getEventsByUserId(
@@ -93,13 +90,16 @@ public class PrivateEventService {
                 .getContent();
     }
 
-    public EventFullDto getEventByUserIdAndEventId(Long userId, Long eventId) {
+    public EventFullDto getEventByUserIdAndEventId(
+            Long userId,
+            Long eventId
+    ) {
         return eventRepository
                 .findById(eventId)
                 .map(e -> {
-                            checkThatRequesterIsEventInitiator(userId, e.getInitiator().getId());
-                            return eventMapper.toFullDto(e);
-                        }
+                         checkThatRequesterIsEventInitiator(userId, e.getInitiator().getId());
+                         return eventMapper.toFullDto(e);
+                     }
                 )
                 .orElseThrow(() -> new EventNotFoundException("Could not find the requested event."));
     }
@@ -113,9 +113,9 @@ public class PrivateEventService {
         Event event = eventRepository
                 .findById(eventId)
                 .map(e -> {
-                            checkThatRequesterIsEventInitiator(userId, e.getInitiator().getId());
-                            return e;
-                        }
+                         checkThatRequesterIsEventInitiator(userId, e.getInitiator().getId());
+                         return e;
+                     }
                 )
                 .orElseThrow(() -> new EventNotFoundException("Could not find the requested event."));
         if (EventState.PUBLISHED.equals(event.getState())) {
@@ -130,7 +130,10 @@ public class PrivateEventService {
         return eventMapper.toFullDto(saved);
     }
 
-    public List<ParticipationRequestDto> getParticipationRequestsByEventId(Long userId, Long eventId) {
+    public List<ParticipationRequestDto> getParticipationRequestsByEventId(
+            Long userId,
+            Long eventId
+    ) {
         Long eventInitiatorId = eventRepository.findInitiatorIdByEventId(eventId);
         checkThatRequesterIsEventInitiator(userId, eventInitiatorId);
         return participationRequestRepository
@@ -186,12 +189,21 @@ public class PrivateEventService {
                 .build();
     }
 
-    private void rejectRequest(ParticipationRequestStatus newStatus, List<ParticipationRequestDto> rejectedRequests, ParticipationRequest request) {
+    private void rejectRequest(
+            ParticipationRequestStatus newStatus,
+            List<ParticipationRequestDto> rejectedRequests,
+            ParticipationRequest request
+    ) {
         request.setStatus(newStatus);
         rejectedRequests.add(participationRequestMapper.toDto(request));
     }
 
-    private void confirmRequest(Event event, ParticipationRequestStatus newStatus, List<ParticipationRequestDto> confirmedRequests, ParticipationRequest request) {
+    private void confirmRequest(
+            Event event,
+            ParticipationRequestStatus newStatus,
+            List<ParticipationRequestDto> confirmedRequests,
+            ParticipationRequest request
+    ) {
         request.setStatus(newStatus);
         event.setConfirmedRequests(event.getConfirmedRequests() + 1);
         confirmedRequests.add(participationRequestMapper.toDto(request));
@@ -202,7 +214,10 @@ public class PrivateEventService {
                 .updateStatusByEventIdAndPending(eventId, ParticipationRequestStatus.REJECTED);
     }
 
-    private void applyStateAction(PrivateEventStateAction stateAction, Event event) {
+    private void applyStateAction(
+            PrivateEventStateAction stateAction,
+            Event event
+    ) {
         switch (stateAction) {
             case CANCEL_REVIEW: {
                 event.setState(EventState.CANCELED);
@@ -224,7 +239,10 @@ public class PrivateEventService {
         }
     }
 
-    private static void checkThatRequesterIsEventInitiator(Long userId, Long eventInitiatorId) {
+    private static void checkThatRequesterIsEventInitiator(
+            Long userId,
+            Long eventInitiatorId
+    ) {
         if (!Objects.equals(userId, eventInitiatorId)) {
             throw new EventNotAccessibleException("You do not have access to the requested event.");
         }
